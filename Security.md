@@ -17,9 +17,9 @@ Security must be treated as a first-class citizen in the development lifecycle, 
 - **XSS (Cross-Site Scripting):** React generally protects against XSS by escaping values rendered in JSX. Never use `dangerouslySetInnerHTML` unless absolutely necessary and the input has been aggressively sanitized (e.g., using DOMPurify).
 - **CSRF (Cross-Site Request Forgery):** If using session cookies for API authentication, ensure anti-CSRF tokens are implemented or `SameSite=Strict` is configured on the cookies.
 
-## 4. Dependency Scanning
-- Regularly audit dependencies for known vulnerabilities.
-- Tools like GitHub Dependabot or `npm audit` should be enabled to alert the team to vulnerable packages.
+## 4. Dependency Management & Scanning
+- **Automated Updates:** Use **Renovate** to automatically keep dependencies up to date (including npm packages, Gradle dependencies, and GitHub Actions). Consistently staying on the latest versions significantly reduces the risk of falling victim to known security vulnerabilities.
+- **Vulnerability Alerts:** In addition to Renovate, tools like GitHub Dependabot or `npm audit` should be enabled to actively alert the team to critically vulnerable packages that require immediate, out-of-band patches.
 
 ## 5. Principle of Least Privilege
 Services, databases, and CI/CD pipelines should only have the minimum permissions necessary to perform their function.
