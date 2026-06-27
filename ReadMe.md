@@ -6,13 +6,18 @@ This document serves as the core entrypoint for our engineering playbook. It cov
 For deep-dives into specific topics and conventions, please refer to our dedicated guides:
 - [Clean Architecture](./CleanArchitecture.md)
 - [Clean Code Guidelines](./CleanCode.md)
+- [Code Review Guidelines](./CodeReview.md)
 - [Git Workflow & Collaboration](./GitWorkflow.md) (and [Squash & Merge](./SquashAndMerge.md))
+- [Feature Flags & Dark Launching](./FeatureFlags.md)
 - [Testing Strategy](./TestingGuide.md)
 - [API Design & Idempotency](./ApiDesign.md)
 - [Security Practices](./Security.md)
 - [Frontend State Management](./StateManagement.md)
+- [Frontend Resilience & Offline Support](./FrontendResilience.md)
 - [Performance & Optimization](./Performance.md)
 - [Observability & Incident Response](./Observability.md)
+- [Third-Party Integrations (Build vs. Buy)](./Integrations.md)
+- [Developer Onboarding (Day One)](./Onboarding.md)
 
 ---
 
