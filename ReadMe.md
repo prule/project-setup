@@ -66,6 +66,14 @@ For projects requiring a PostgreSQL backend, database schemas and migrations are
   - Use explicit UUIDs as primary keys by default.
   - All tables must include `created_at` and `updated_at` timestamp columns for auditing purposes.
 
+### Zero-Downtime Migrations (Expand and Contract Pattern)
+Because multiple instances of the backend may be running simultaneously during a deployment, **all database migrations must be backwards compatible**. A new version of the application might run alongside the old version for several minutes during a rolling update.
+
+If you need to make a breaking change (like renaming or dropping a column), you must use the **Expand and Contract** pattern spread across multiple deployments:
+1. **Expand (Deployment 1):** Add the new column. Update the application code to write to *both* the old and new columns, but continue reading from the old column.
+2. **Migrate (Deployment 2):** Run a migration to backfill existing data from the old column into the new column. Update the application code to read from the *new* column.
+3. **Contract (Deployment 3):** Once all running instances are using the new column and no code relies on the old one, you can safely drop the old column from the database.
+
 ---
 
 ## 5. Git Hooks & Code Formatting
