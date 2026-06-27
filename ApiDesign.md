@@ -6,12 +6,17 @@ For projects implementing a REST API Backend, consistency in API design is param
 - **Use Nouns, Not Verbs:** Endpoints should represent resources.
   - *Good:* `GET /users`, `POST /orders`
   - *Bad:* `GET /getAllUsers`, `POST /createNewOrder`
-- **HTTP Methods:**
-  - `GET`: Retrieve a resource (idempotent, safe).
-  - `POST`: Create a new resource.
-  - `PUT`: Fully replace an existing resource (idempotent).
-  - `PATCH`: Partially update a resource.
-  - `DELETE`: Remove a resource (idempotent).
+- **HTTP Methods & Behaviors:**
+  - **`GET`**: Retrieve a resource or collection. (Safe & Idempotent).
+    - *Example:* `GET /users/123` returns the user's data.
+  - **`POST`**: Create a *new* resource under a collection. It is NOT idempotent.
+    - *Example:* `POST /users` with a body like `{"name": "Alice"}`. The server assigns the ID and creates `/users/124`.
+  - **`PUT`**: Fully *replace* an existing resource. It IS idempotent. You must send the entire resource representation. If a field is omitted from the payload, it must be set to null/empty on the server.
+    - *Example:* `PUT /users/123` with `{"name": "Bob", "email": "bob@example.com"}`. If the user previously had a `phone` number but it's not in this payload, the phone number is deleted.
+  - **`PATCH`**: Partially update a resource. You only send the fields that need to change.
+    - *Example:* `PATCH /users/123` with `{"email": "new.bob@example.com"}`. The user's name and phone number remain untouched.
+  - **`DELETE`**: Remove a resource. (Idempotent).
+    - *Example:* `DELETE /users/123` deletes the user. Running it again might return a `404 Not Found` (or `204 No Content`), but the end state is the same: the user is gone.
 
 ## 2. HATEOAS (Hypermedia as the Engine of Application State)
 As specified in our core architecture, responses should include hypermedia links that guide the client on what actions are possible next, based on the resource's state and the user's permissions.
