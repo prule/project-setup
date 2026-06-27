@@ -1,6 +1,20 @@
 # Software Development Preferences & Guidelines
 
-This document serves as the standard playbook for setting up and building software projects. It covers everything from architecture choices to specific tooling, testing, and deployment strategies.
+This document serves as the core entrypoint for our engineering playbook. It covers high-level architecture choices, tooling, and deployment strategies.
+
+### 📚 Engineering Playbook Index
+For deep-dives into specific topics and conventions, please refer to our dedicated guides:
+- [Clean Architecture](./CleanArchitecture.md)
+- [Clean Code Guidelines](./CleanCode.md)
+- [Git Workflow & Collaboration](./GitWorkflow.md) (and [Squash & Merge](./SquashAndMerge.md))
+- [Testing Strategy](./TestingGuide.md)
+- [API Design & Idempotency](./ApiDesign.md)
+- [Security Practices](./Security.md)
+- [Frontend State Management](./StateManagement.md)
+- [Performance & Optimization](./Performance.md)
+- [Observability & Incident Response](./Observability.md)
+
+---
 
 ## 1. Architectural Paradigms
 
