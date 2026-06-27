@@ -54,7 +54,21 @@ If the project requires a REST API, adhere to these standards:
 
 ---
 
-## 4. Git Hooks & Code Formatting
+## 4. Database Migrations & Data Modeling
+
+For projects requiring a PostgreSQL backend, database schemas and migrations are managed as follows:
+
+- **Migration Tool:** Flyway.
+- **Execution Strategy:** Migrations must be applied automatically on application startup (e.g., via Spring Boot's native Flyway integration) to ensure the database schema is always in sync with the application code.
+- **Data Modeling Conventions:**
+  - Use `snake_case` for all table and column names.
+  - Use plural names for tables (e.g., `users`, `orders`).
+  - Use explicit UUIDs as primary keys by default.
+  - All tables must include `created_at` and `updated_at` timestamp columns for auditing purposes.
+
+---
+
+## 5. Git Hooks & Code Formatting
 
 Code must be automatically formatted on commit using **Husky** and **lint-staged**.
 
@@ -66,7 +80,7 @@ Code must be automatically formatted on commit using **Husky** and **lint-staged
 
 ---
 
-## 5. CI/CD & Versioning
+## 6. CI/CD & Versioning
 
 - **CI Provider:** GitHub Actions (GitHub CI).
 - **Dependency Management:** Use **Renovate** to automatically keep dependencies up to date.
@@ -77,7 +91,7 @@ Code must be automatically formatted on commit using **Husky** and **lint-staged
 
 ---
 
-## 6. Deployment & Analytics
+## 7. Deployment & Analytics
 
 - **Hosting:** Deploy frontend applications to **Cloudflare Pages**.
 - **Analytics:** Cloudflare Web Analytics.
@@ -86,7 +100,7 @@ Code must be automatically formatted on commit using **Husky** and **lint-staged
 
 ---
 
-## 7. Forms, Feedback & Landing Pages
+## 8. Forms, Feedback & Landing Pages
 
 Avoid heavy backend setups just for form collection. Instead, leverage Google Sheets:
 - **Feedback Page:** Collect user comments by submitting data to a Google Sheet. Use the "prefilled Google Form" URL submission trick to handle the backend without the user ever seeing the actual Google Form interface.
@@ -94,7 +108,7 @@ Avoid heavy backend setups just for form collection. Instead, leverage Google Sh
 
 ---
 
-## 8. Observability & Logging
+## 9. Observability & Logging
 
 - **Logging:** Implement structured, contextual logging. Include unique trace IDs (e.g., using MDC in Kotlin/Java) to follow requests throughout their lifecycle.
 - **Monitoring:** Collect key application and performance metrics.
@@ -102,7 +116,7 @@ Avoid heavy backend setups just for form collection. Instead, leverage Google Sh
 
 ---
 
-## 9. Developer Experience (DX)
+## 10. Developer Experience (DX)
 
 ### The `run` Script
 Every repository must contain a `run` shell script in its root directory.
