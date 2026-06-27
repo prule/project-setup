@@ -104,6 +104,7 @@ Code must be automatically formatted on commit using **Husky** and **lint-staged
 - **Hosting:** Deploy frontend applications to **Cloudflare Pages**.
 - **Analytics:** Cloudflare Web Analytics.
   - Use the "Auto" integration method from the Cloudflare Dashboard (Cloudflare Dashboard → Pages project → Metrics tab → enable Web Analytics). This requires zero code and no tokens.
+  - **Privacy Advantage:** Cloudflare Web Analytics is privacy-first. It does not use client-side state (like cookies or `localStorage`) to track users across sites or collect personal data. Therefore, it **does not require a GDPR cookie banner** or tracking consent prompt, keeping the UI clean and legally compliant by default.
 - **Legal/Privacy:** Ensure a privacy page exists (e.g., `https://portfolio.vamonossoftware.com/privacy`).
 
 ---
