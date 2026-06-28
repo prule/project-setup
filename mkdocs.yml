@@ -1,5 +1,6 @@
 site_name: The Engineering Playbook
 site_description: Software Development Preferences & Guidelines
+site_url: https://prule.github.io/project-setup/
 theme:
   name: material
   palette:
