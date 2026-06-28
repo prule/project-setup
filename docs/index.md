@@ -46,6 +46,7 @@ When starting a new project, evaluate if it needs a full backend or if a local-f
 ## 2. Frontend Stack & Setup
 
 All frontend projects should utilize the following core stack:
+
 - **Framework:** React + TypeScript.
 - **Build Tool:** Vite.
 - **Package Manager:** PNPM (Node 24 required). PNPM ensures efficient and fast `node_modules` storage.
@@ -57,6 +58,7 @@ All frontend projects should utilize the following core stack:
 - **Component Architecture:** Focus on clean code and highly reusable components. Always use the latest stable package versions.
 
 ### Frontend Testing
+
 - **Unit/Integration Tests:** Vitest.
 - **E2E Tests:** Playwright combined with **Serenity BDD**.
   - Must use the **Screenplay Pattern**.
@@ -67,6 +69,7 @@ All frontend projects should utilize the following core stack:
 ## 3. Backend Stack (If Required)
 
 If the project requires a REST API, adhere to these standards:
+
 - **Language:** Kotlin.
 - **Architecture:** Hexagonal / Clean Architecture.
 - **Framework & Database:**
@@ -96,6 +99,7 @@ For projects requiring a PostgreSQL backend, database schemas and migrations are
 Because multiple instances of the backend may be running simultaneously during a deployment, **all database migrations must be backwards compatible**. A new version of the application might run alongside the old version for several minutes during a rolling update.
 
 If you need to make a breaking change (like renaming or dropping a column), you must use the **Expand and Contract** pattern spread across multiple deployments:
+
 1. **Expand (Deployment 1):** Add the new column. Update the application code to write to *both* the old and new columns, but continue reading from the old column.
 2. **Migrate (Deployment 2):** Run a migration to backfill existing data from the old column into the new column. Update the application code to read from the *new* column.
 3. **Contract (Deployment 3):** Once all running instances are using the new column and no code relies on the old one, you can safely drop the old column from the database.
@@ -138,6 +142,7 @@ Code must be automatically formatted on commit using **Husky** and **lint-staged
 ## 8. Forms, Feedback & Landing Pages
 
 Avoid heavy backend setups just for form collection. Instead, leverage Google Sheets:
+
 - **Feedback Page:** Collect user comments by submitting data to a Google Sheet. Use the "prefilled Google Form" URL submission trick to handle the backend without the user ever seeing the actual Google Form interface.
 - **Landing Page:** Use the same Google Sheet/Form technique to build a "Register Interest" form for pre-launch products.
 
@@ -155,6 +160,7 @@ Avoid heavy backend setups just for form collection. Instead, leverage Google Sh
 
 ### The `run` Script
 Every repository must contain a `run` shell script in its root directory.
+
 - **Purpose:** Acts as executable documentation.
 - **Functionality:** Automates all relevant developer commands (e.g., `./run app:build`, `./run db:up`).
 - **Benefit:** Developers don't need to memorize complex CLI arguments, and the script inherently documents how to set up and work within the environment.
