@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -e
+
+function print_help {
+    echo "Usage: ./run [command]"
+    echo ""
+    echo "Commands:"
+    echo "  setup    - Installs the required Python dependencies (mkdocs-material)"
+    echo "  serve    - Starts the local live-reloading development server"
+    echo "  build    - Builds the static site for production into the site/ directory"
+    echo "  help     - Shows this help message"
+}
+
+case "$1" in
+    setup)
+        echo "Installing MkDocs dependencies..."
+        pip install mkdocs-material
+        ;;
+    serve)
+        echo "Starting MkDocs local server..."
+        mkdocs serve
+        ;;
+    build)
+        echo "Building static site..."
+        mkdocs build
+        ;;
+    help|*)
+        print_help
+        ;;
+esac

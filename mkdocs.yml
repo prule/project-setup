@@ -1,0 +1,60 @@
+site_name: The Engineering Playbook
+site_description: Software Development Preferences & Guidelines
+theme:
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+
+nav:
+  - Introduction: index.md
+  - Architecture:
+    - Clean Architecture: CleanArchitecture.md
+    - API Design & Idempotency: ApiDesign.md
+  - Code & Conventions:
+    - Clean Code Guidelines: CleanCode.md
+    - Code Review Guidelines: CodeReview.md
+    - Testing Strategy: TestingGuide.md
+    - Styling & CSS: Styling.md
+  - Workflow & Deployment:
+    - Git Workflow: GitWorkflow.md
+    - Squash & Merge: SquashAndMerge.md
+    - Feature Flags: FeatureFlags.md
+    - The Way of Working (DoD): WayOfWorking.md
+  - Security & Compliance:
+    - Security Practices: Security.md
+    - Data Privacy: Privacy.md
+  - Resilience & Operations:
+    - Frontend State Management: StateManagement.md
+    - Frontend Resilience: FrontendResilience.md
+    - Accessibility (a11y): Accessibility.md
+    - Timezones & Localization: Localization.md
+    - Performance & Optimization: Performance.md
+    - Observability & Incident Response: Observability.md
+    - Third-Party Integrations: Integrations.md
+    - Disaster Recovery: DisasterRecovery.md
+  - Getting Started:
+    - Developer Onboarding: Onboarding.md
+    - AI Skills Installation: AISkills.md
