@@ -7,9 +7,7 @@ This repository contains our comprehensive documentation for architecture choice
 ## 📖 Read the Book
 The playbook is automatically generated into a beautiful, searchable site using MkDocs.
 
-**[👉 View the Engineering Playbook Online](https://your-username.github.io/ProjectSetup)**
-
-*(Note: Replace `your-username` with your actual GitHub username or organization name).*
+**[👉 View the Engineering Playbook Online](https://prule.github.io/ProjectSetup)**
 
 ## 🛠️ Running Locally
 If you are contributing to the playbook and want to preview your changes locally before committing:
