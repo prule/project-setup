@@ -20,19 +20,20 @@ By installing these skills into your local AI environment, your AI coding assist
 
 ## Installation
 
-To install these skills locally, follow these steps:
+### 🚀 1-Click Installation (For Any Local AI)
+To install these AI skills locally into any project, simply navigate to your project directory and run:
 
-1. **Clone this repository** to your local machine (e.g., `~/code/ProjectSetup`).
-2. **Locate your Global Customizations Root**. For this AI system, it is usually located at `~/.gemini/config/`.
-3. **Edit or create `skills.json`** in that config directory.
-4. Add the absolute path to the `skills/` directory of this repository:
-
-```json
-{
-  "entries": [
-    { "path": "/path/to/your/clone/ProjectSetup/skills" }
-  ]
-}
+```bash
+npx github:prule/project-setup init
 ```
 
-Once this file is saved, your AI agent will instantly discover and load these skills, making it perfectly aligned with our engineering standards!
+This will instantly copy the Playbook's AI instructions into your project's `.agents/skills` folder. Because these are now local files, your AI assistant will immediately adhere to our standards, and the rules will be committed to version control for the rest of your team to use!
+
+### Installing in Claude (Claude Projects)
+To use these playbook skills with Anthropic's web-based Claude:
+1. Create a new **Project** in the Claude web interface.
+2. Under **Project Knowledge**, upload the `SKILL.md` files from the `skills/` directory of this repository.
+3. In the **Custom Instructions** for the project, add the following directive:
+   > "When asked to perform a task matching one of the skills in the Project Knowledge, please read the corresponding SKILL.md file and follow its instructions exactly before writing any code."
+4. You can now chat in your project, and Claude will reference our company's playbook rules when prompted!
+

@@ -28,20 +28,17 @@ This repository isn't just a playbook of rules for human engineers to follow. It
 
 For a full list of the 11 available skills, see the [AI Skills Hub](https://prule.github.io/project-setup/AISkills/).
 
-### Installing in Google Antigravity / Gemini
-1. Clone this repository locally.
-2. Locate your Global Customizations Root (usually `~/.gemini/config/`).
-3. Add the absolute path of the `skills/` directory to your `skills.json` file:
-   ```json
-   {
-     "entries": [
-       { "path": "/absolute/path/to/ProjectSetup/skills" }
-     ]
-   }
-   ```
+### 🚀 1-Click Installation (For Any Local AI)
+To install these AI skills locally into any project, simply navigate to your project directory and run:
+
+```bash
+npx github:prule/project-setup init
+```
+
+This will instantly copy the Playbook's AI instructions into your project's `.agents/skills` folder. Because these are now local files, your AI assistant will immediately adhere to our standards, and the rules will be committed to version control for the rest of your team to use!
 
 ### Installing in Claude (Claude Projects)
-To use these playbook skills with Anthropic's Claude:
+To use these playbook skills with Anthropic's web-based Claude:
 1. Create a new **Project** in the Claude web interface.
 2. Under **Project Knowledge**, upload the `SKILL.md` files from the `skills/` directory of this repository.
 3. In the **Custom Instructions** for the project, add the following directive:
