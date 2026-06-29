@@ -15,6 +15,7 @@ By installing these skills into your local AI environment, your AI coding assist
 7. **`scaffold-ktor-controller`**: Generates a REST Controller using Ktor Type-Safe Routing and inline OpenAPI documentation.
 8. **`integrate-google-form-feedback`**: Intercepts requests to build feedback features and implements a lightweight, headless Google Form submission instead of a custom database.
 9. **`integrate-google-form-register-interest`**: Implements a "waitlist" or email capture mechanism using a headless Google Form submission.
+10. **`setup-git-hooks`**: Generates native Git hooks (using `.githooks` and `core.hooksPath`) for automatic formatting/linting on commit.
 
 ## Installation
 
