@@ -1,5 +1,5 @@
 ---
-name: vssw-run-script
+name: vssw:run-script
 description: >
   Use this skill whenever the user asks to set up the project, install dependencies, start the development server, or build the project.
 ---

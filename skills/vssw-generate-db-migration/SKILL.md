@@ -1,5 +1,5 @@
 ---
-name: vssw-generate-db-migration
+name: vssw:generate-db-migration
 description: >
   Generates a zero-downtime Flyway SQL migration script. 
   Use this skill when asked to create, modify, or drop database tables/columns.

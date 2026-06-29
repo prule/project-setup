@@ -1,5 +1,5 @@
 ---
-name: vssw-audit-project-compliance
+name: vssw:audit-project-compliance
 description: >
   Audits the current project to ensure it complies with the Playbook's strict standards.
   Use this skill whenever asked to "audit the project", "check compliance", or "find what's missing".
@@ -36,4 +36,4 @@ Scan the codebase against these strict criteria.
 ## Phase 3: The Report Artifact
 Output your findings as a Markdown Artifact (`project_audit_report.md`):
 - Present a clear ✅ / ❌ checklist of the criteria above.
-- For every ❌, provide an actionable AI prompt the user can run to fix it. (e.g., *"Ask me to run the `vssw-setup-git-hooks` skill to resolve issue #2."*)
+- For every ❌, provide an actionable AI prompt the user can run to fix it. (e.g., *"Ask me to run the `vssw:setup-git-hooks` skill to resolve issue #2."*)

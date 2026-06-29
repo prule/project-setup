@@ -1,5 +1,5 @@
 ---
-name: vssw-integrate-google-form-register-interest
+name: vssw:integrate-google-form-register-interest
 description: >
   Implements a "register interest" or "waitlist" mechanism using Google Forms instead of a custom database.
   Use this skill whenever asked to add an email capture form, waitlist, or newsletter signup.
