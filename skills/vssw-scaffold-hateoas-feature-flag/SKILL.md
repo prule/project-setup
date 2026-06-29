@@ -1,5 +1,5 @@
 ---
-name: scaffold-hateoas-feature-flag
+name: vssw-scaffold-hateoas-feature-flag
 description: >
   Implements a new feature flag using the HATEOAS pattern. Use this skill when the user asks to hide a new feature behind a toggle.
 ---

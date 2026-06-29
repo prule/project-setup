@@ -1,5 +1,5 @@
 ---
-name: integrate-google-form-feedback
+name: vssw-integrate-google-form-feedback
 description: >
   Implements a user feedback mechanism using Google Forms instead of a custom database.
   Use this skill whenever asked to add a feedback feature, support form, or survey to the app.

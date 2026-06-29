@@ -1,5 +1,5 @@
 ---
-name: scaffold-idempotent-api
+name: vssw-scaffold-idempotent-api
 description: >
   Scaffolds a new REST API endpoint. Use this skill when asked to create a POST, PUT, or PATCH route in the backend.
 ---

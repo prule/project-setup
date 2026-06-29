@@ -1,5 +1,5 @@
 ---
-name: setup-git-hooks
+name: vssw-setup-git-hooks
 description: >
   Sets up automatic code formatting on commit using Git Hooks.
   Use this skill whenever asked to add pre-commit hooks, formatting on commit, or linting hooks.

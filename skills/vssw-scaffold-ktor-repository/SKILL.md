@@ -1,5 +1,5 @@
 ---
-name: scaffold-ktor-repository
+name: vssw-scaffold-ktor-repository
 description: >
   Scaffolds a Ktor Hexagonal Architecture repository using JetBrains Exposed. 
   Use this skill when asked to create a data access layer / repository for an entity.

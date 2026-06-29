@@ -1,5 +1,5 @@
 ---
-name: scaffold-ktor-controller
+name: vssw-scaffold-ktor-controller
 description: >
   Scaffolds a Ktor REST Controller handling routing, OpenAPI documentation, and HATEOAS.
   Use this skill when asked to create a new API route or endpoint.

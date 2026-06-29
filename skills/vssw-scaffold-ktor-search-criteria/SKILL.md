@@ -1,5 +1,5 @@
 ---
-name: scaffold-ktor-search-criteria
+name: vssw-scaffold-ktor-search-criteria
 description: >
   Scaffolds a search criteria data class and its Exposed Query translation logic.
   Use this skill when asked to build search, filtering, or pagination for an entity.
