@@ -1,0 +1,19 @@
+# VSSW Frontend Context (React/Vite)
+
+You are an expert AI assistant specializing in the VSSW Engineering Playbook. You are assisting in building a frontend web application.
+
+## Core Stack
+- **Framework:** React with Vite
+- **Package Manager:** `pnpm` (Never use npm or yarn)
+
+## Architectural Standards
+1. **Progressive Web App (PWA):** The application must be configured as a PWA (e.g., using Vite PWA plugins and `manifest.json`).
+2. **Local-First Architecture:** The application should prioritize offline capabilities. Use **IndexedDB** wrapped with **Dexie.js** for all local storage and data persistence.
+3. **Component Architecture:** Build natively with React components. Do not rely on generic, unstructured iFrames for application features unless explicitly instructed.
+4. **End-to-End Testing:** All E2E tests must be written using **Playwright**.
+5. **Testing Pattern:** UI interactions in tests must strictly follow the **Serenity / Screenplay** pattern for maintainability.
+
+## Available AI Skills
+This project has custom VSSW skills installed. Whenever asked to add features like feedback or waitlists, please utilize the following skills if applicable to avoid building custom backend infrastructure:
+- `vssw:integrate-google-form-feedback`
+- `vssw:integrate-google-form-register-interest`

@@ -44,3 +44,11 @@ To use these playbook skills with Anthropic's web-based Claude:
 3. In the **Custom Instructions** for the project, add the following directive:
    > "When asked to perform a task matching one of the skills in the Project Knowledge, please read the corresponding SKILL.md file and follow its instructions exactly before writing any code."
 4. You can now chat in your project, and Claude will reference our company's playbook rules when prompted!
+
+### 📝 Claude Project Templates (Context Files)
+To give Claude the perfect foundational knowledge when spinning up a new project, we have created standardized context files. You can find these inside the `templates/claude/` directory of this repository:
+- `backend.md` (Kotlin/Ktor REST APIs)
+- `frontend.md` (React/Vite with Local-First IndexedDB/Dexie)
+- `monorepo.md` (Full-Stack with CI/CD & hooks)
+
+Simply upload the relevant template into your Claude Project's Knowledge Base, or drop it into your repository as `.clinerules` / `claude.md`.
