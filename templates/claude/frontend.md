@@ -15,7 +15,7 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 6. **URL State Management:** All React applications must update the browser URL when navigating or changing major views, to support bookmarking and sharing URLs.
 7. **Essential Features:** All apps must include User Guides and Feedback Forms (backed by Google Forms using prefill).
 8. **Landing Pages:** Landing pages must include a "Register Interest" form (backed by Google Forms using prefill).
-9. **Versioning & CI:** The application must have a version number and a CI/CD pipeline (e.g., GitHub Actions). The minor version bump must be automated via a Git commit hook for each new feature change (not during CI, since every version may not be deployed).
+9. **Versioning:** Do not store the version on branches or manually bump it. The application version must be derived from git history at build time (e.g., computing the minor version from the number of commits/merges on `main`) and injected via the build tool (e.g., a Vite define).
 10. **Git Hooks for Formatting:** Source code formatting with tools like lint should always be automated via a Git commit hook.
 
 ## Available AI Skills
