@@ -13,7 +13,7 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 3. **Idempotency:** State-mutating requests (POST/PUT/PATCH) must require and validate an `Idempotency-Key` header.
 4. **Error Handling:** All error responses must comply with the RFC 7807 (Problem Details for HTTP APIs) specification.
 5. **Database Migrations:** Use Flyway. All schema changes must follow the "Expand and Contract" pattern for zero-downtime deployments.
-6. **Versioning:** The application must have a version number. The minor version must be bumped with each new feature change.
+6. **Versioning & CI:** The application must have a version number and a CI/CD pipeline (e.g., GitHub Actions). The minor version bump must be automated during the CI process for each new feature change.
 
 ## Available AI Skills
 This project has custom VSSW skills installed. Whenever asked to scaffold or modify code, please utilize the following skills if applicable:
