@@ -25,6 +25,7 @@ When asked to implement a feedback mechanism, enforce the following pattern:
 - Map the React form state and any application context (e.g., `userId`, `currentUrl`, `appVersion`) to the specific Google Form `entry.<id>` fields.
 - Submit the data to the Google Form's `formResponse` URL using a `fetch` POST request with `mode: "no-cors"`.
 - Because `no-cors` returns an opaque response, treat any fetch that resolves without throwing a network error as a successful submission.
+- If the fetch request throws a network error, catch it and display a dialog stating that the feedback could not be reported.
 
 Provide a code example showing this submission pattern:
 ```typescript

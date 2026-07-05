@@ -24,6 +24,7 @@ When asked to implement an email capture or waitlist mechanism, enforce the foll
 - When the React form is submitted, construct a `FormData` object mapping the entered email to the specific Google Form `entry.<id>` field.
 - Submit the data to the Google Form's `formResponse` URL using a `fetch` POST request with `mode: "no-cors"`.
 - Because `no-cors` returns an opaque response, treat any fetch that resolves without throwing a network error as a successful submission.
+- If the fetch request throws a network error, catch it and display a dialog stating that the feedback could not be reported.
 
 Provide a code example showing this submission pattern:
 ```typescript
