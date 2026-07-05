@@ -17,7 +17,7 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 8. **Landing Pages:** Landing pages must include a "Register Interest" form (backed by Google Forms using prefill).
 9. **Versioning:** Do not store the version on branches or manually bump it. The application version must be derived from git history at build time (e.g., computing the minor version from the number of commits/merges on `main`) and injected via the build tool (e.g., a Vite define).
 10. **Git Hooks for Formatting:** Source code formatting with tools like lint should always be automated via a Git commit hook.
-11. **Pull Requests:** Always use squash-merge when merging Pull Requests into `main`.
+11. **Pull Requests:** Always use squash-merge when merging Pull Requests into `main`. **Why:** So the work from a PR is recorded as one commit when merging to main, meaning the version will be bumped exactly once for each PR.
 
 ## Available AI Skills
 This project has custom VSSW skills installed. Whenever asked to add features like feedback or waitlists, please utilize the following skills if applicable to avoid building custom backend infrastructure:
