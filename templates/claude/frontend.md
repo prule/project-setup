@@ -12,6 +12,7 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 3. **Component Architecture:** Build natively with React components. Do not rely on generic, unstructured iFrames for application features unless explicitly instructed.
 4. **End-to-End Testing:** All E2E tests must be written using **Playwright**.
 5. **Testing Pattern:** UI interactions in tests must strictly follow the **Serenity / Screenplay** pattern for maintainability.
+6. **URL State Management:** All React applications must update the browser URL when navigating or changing major views, to support bookmarking and sharing URLs.
 
 ## Available AI Skills
 This project has custom VSSW skills installed. Whenever asked to add features like feedback or waitlists, please utilize the following skills if applicable to avoid building custom backend infrastructure:

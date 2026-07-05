@@ -19,6 +19,7 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 ## Frontend Architectural Standards
 - Enforce Progressive Web App (PWA) configuration.
 - Implement **Local-First Architecture** using **IndexedDB** and **Dexie.js** for local data persistence.
+- Update the browser URL when navigating or changing views to support bookmarking and sharing.
 - Write E2E tests using Playwright and the Serenity / Screenplay pattern.
 
 ## Available AI Skills
