@@ -9,7 +9,7 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 ## Global Project Standards
 1. **The `./run` Script:** The root of the repository must contain a `./run` script abstracting all build tools. It should support commands like `./run setup`, `./run serve`, and `./run build`.
 2. **Git Hooks:** Formatting and linting must be enforced locally via a `.githooks/pre-commit` script, initialized by `git config core.hooksPath .githooks`.
-3. **CI/CD & Versioning:** All deployments must be automated via GitHub Actions (`.github/workflows`). All applications must have a version number, and the minor version bump must be automated during the CI process for each new feature change.
+3. **CI/CD & Versioning:** All deployments must be automated via GitHub Actions (`.github/workflows`). All applications must have a version number, and the minor version bump must be automated via a Git commit hook for each new feature change (not during CI, since every version may not be deployed).
 
 ## Backend Architectural Standards
 - Enforce Hexagonal Architecture (Ports and Adapters).
