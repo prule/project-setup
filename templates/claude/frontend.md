@@ -16,6 +16,7 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 7. **Essential Features:** All apps must include User Guides and Feedback Forms (backed by Google Forms using prefill).
 8. **Landing Pages:** Landing pages must include a "Register Interest" form (backed by Google Forms using prefill).
 9. **Versioning & CI:** The application must have a version number and a CI/CD pipeline (e.g., GitHub Actions). The minor version bump must be automated via a Git commit hook for each new feature change (not during CI, since every version may not be deployed).
+10. **Git Hooks for Formatting:** Source code formatting with tools like lint should always be automated via a Git commit hook.
 
 ## Available AI Skills
 This project has custom VSSW skills installed. Whenever asked to add features like feedback or waitlists, please utilize the following skills if applicable to avoid building custom backend infrastructure:
