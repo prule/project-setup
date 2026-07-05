@@ -13,6 +13,8 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 4. **End-to-End Testing:** All E2E tests must be written using **Playwright**.
 5. **Testing Pattern:** UI interactions in tests must strictly follow the **Serenity / Screenplay** pattern for maintainability.
 6. **URL State Management:** All React applications must update the browser URL when navigating or changing major views, to support bookmarking and sharing URLs.
+7. **Essential Features:** All apps must include User Guides and Feedback Forms (backed by Google Forms using prefill).
+8. **Landing Pages:** Landing pages must include a "Register Interest" form (backed by Google Forms using prefill).
 
 ## Available AI Skills
 This project has custom VSSW skills installed. Whenever asked to add features like feedback or waitlists, please utilize the following skills if applicable to avoid building custom backend infrastructure:
