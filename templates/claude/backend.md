@@ -15,6 +15,7 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 5. **Database Migrations:** Use Flyway. All schema changes must follow the "Expand and Contract" pattern for zero-downtime deployments.
 6. **Versioning:** Do not store the version on branches or manually bump it. The application version must be derived from git history at build time (e.g., computing the minor version from the number of commits/merges on `main`) and injected into the build process.
 7. **Git Hooks for Formatting:** Source code formatting with tools like lint, ktfmt, and google-java-format should always be automated via a Git commit hook.
+8. **Pull Requests:** Always use squash-merge when merging Pull Requests into `main`.
 
 ## Available AI Skills
 This project has custom VSSW skills installed. Whenever asked to scaffold or modify code, please utilize the following skills if applicable:
