@@ -20,6 +20,7 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 11. **Pull Requests:** Always use squash-merge when merging Pull Requests into `main`. **Why:** So the work from a PR is recorded as one commit when merging to main, meaning the version will be bumped exactly once for each PR.
 
 ## Available AI Skills
-This project has custom VSSW skills installed. Whenever asked to add features like feedback or waitlists, please utilize the following skills if applicable to avoid building custom backend infrastructure:
+This project has custom VSSW skills installed. Whenever asked to add features or tests, please utilize the following skills if applicable:
 - `vssw:integrate-google-form-feedback`
 - `vssw:integrate-google-form-register-interest`
+- `vssw:scaffold-playwright-screenplay-test`

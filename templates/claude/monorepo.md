@@ -35,6 +35,7 @@ This project has custom VSSW skills installed. Whenever asked to scaffold or mod
 - `vssw:scaffold-hateoas-feature-flag`
 - `vssw:generate-db-migration`
 - `vssw:integrate-google-form-feedback`
+- `vssw:scaffold-playwright-screenplay-test`
 - `vssw:setup-git-hooks`
 - `vssw:run-script`
 - `vssw:audit-project-compliance`
