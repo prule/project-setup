@@ -1,0 +1,63 @@
+{
+  "name": "{{PROJECT_NAME}}",
+
+  // JS toolchain (fnm + Node, standalone pnpm, OpenSpec CLI) is built from the
+  // Dockerfile — NOT corepack. See docs/DevContainers.md.
+  "build": { "dockerfile": "Dockerfile" },
+
+  // Binaries layered on as official Dev Container Features:
+  //   - github-cli, claude-code : always.
+  //   - java : ONLY if the base image is NOT already a java image.
+  //   - docker-in-docker : ONLY if the app needs nested Docker (e.g. Supabase).
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
+    // , "ghcr.io/devcontainers/features/docker-in-docker:2": { "moby": true }
+  },
+
+  // Predictable identity. --hostname => `vscode@{{PROJECT_NAME}}` prompt.
+  // Add "--privileged" as a third arg ONLY when using docker-in-docker.
+  // If a rebuild ever 409s on the name: docker rm -f {{PROJECT_NAME}}-dev
+  "runArgs": ["--name", "{{PROJECT_NAME}}-dev", "--hostname", "{{PROJECT_NAME}}"],
+
+  "forwardPorts": [{{PORTS}}],
+
+  // Volumes — see docs/DevContainers.md "Shared repositories".
+  //   SHARED across every dev container (one download per machine):
+  //     - devcontainer-cache -> /cache : holds the pnpm store (/cache/pnpm-store)
+  //       AND the Gradle cache (/cache/gradle). Name + path are the sharing
+  //       mechanism — never rename per project.
+  //   PER-PROJECT (isolated, disposable):
+  //     - node_modules  : keeps host native binaries out of the Linux container.
+  //     - ms-playwright : browsers; NOT shared (GC across projects deletes them).
+  //     - <name>-dind   : nested Docker images, ONLY with docker-in-docker.
+  //     - <name>-claude / <name>-gh : OPTIONAL, persist CLI logins across rebuilds.
+  // NEVER mount a volume at ~/.local/share/pnpm (PNPM_HOME) — it shadows the
+  // baked-in standalone pnpm.
+  "mounts": [
+    "source={{PROJECT_NAME}}-node-modules,target=${containerWorkspaceFolder}/node_modules,type=volume",
+    "source=devcontainer-cache,target=/cache,type=volume",
+    "source={{PROJECT_NAME}}-playwright,target=/home/vscode/.cache/ms-playwright,type=volume"
+  ],
+
+  // containerEnv (NOT remoteEnv) so every process inherits it. Add
+  // GRADLE_USER_HOME only for Kotlin/Gradle projects (shared Gradle cache).
+  "containerEnv": {
+    "PLAYWRIGHT_BROWSERS_PATH": "/home/vscode/.cache/ms-playwright",
+    "OPENSPEC_TELEMETRY": "0"
+    // , "GRADLE_USER_HOME": "/cache/gradle"
+  },
+
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "remoteUser": "vscode",
+
+  // VS Code reads `vscode`; JetBrains reads `jetbrains`. Both open the SAME
+  // container. Backend: "WebStorm" for frontend, "IntelliJ" for Kotlin/Gradle.
+  "customizations": {
+    "vscode": {
+      "extensions": ["esbenp.prettier-vscode", "ms-playwright.playwright"],
+      "settings": { "terminal.integrated.defaultProfile.linux": "zsh" }
+    },
+    "jetbrains": { "backend": "WebStorm" }
+  }
+}

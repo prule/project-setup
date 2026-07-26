@@ -56,6 +56,8 @@ nav:
     - Observability & Incident Response: Observability.md
     - Third-Party Integrations: Integrations.md
     - Disaster Recovery: DisasterRecovery.md
+  - Development Environment:
+    - Dev Containers: DevContainers.md
   - Getting Started:
     - Developer Onboarding: Onboarding.md
     - AI Skills Installation: AISkills.md

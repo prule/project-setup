@@ -26,7 +26,7 @@ If you are contributing to the playbook and want to preview your changes locally
 
 This repository isn't just a playbook of rules for human engineers to follow. It is an **Installable AI Plugin**. It contains custom AI skills that force your AI coding assistant to generate code adhering strictly to these playbook standards (e.g., using Hexagonal Architecture, HATEOAS, Expand and Contract migrations, etc.).
 
-For a full list of the 11 available skills, see the [AI Skills Hub](https://prule.github.io/project-setup/AISkills/).
+For a full list of the 12 available skills, see the [AI Skills Hub](https://prule.github.io/project-setup/AISkills/).
 
 ### 🚀 1-Click Installation (For Any Local AI)
 To install these AI skills locally into any project, simply navigate to your project directory and run:
