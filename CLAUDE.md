@@ -27,7 +27,7 @@ There is no test suite; `npm test` is an unimplemented stub. Verification is: do
 The installer is exercised with:
 
 ```bash
-npx github:prule/project-setup init   # copies skills/ -> <cwd>/.agents/skills
+npx github:prule/project-setup init   # copies skills/ -> <cwd>/.claude/skills
 ```
 
 ## Publishing pipeline
@@ -44,10 +44,17 @@ Check the rendered HTML rather than the source when a list looks wrong — the g
 
 ## Adding or editing a skill
 
-Skills live in `skills/vssw-<kebab-name>/SKILL.md`. Two naming conventions coexist and both matter:
+Skills live in `skills/vssw-<kebab-name>/SKILL.md`. **The directory name, the frontmatter `name:`, and every reference in docs/templates must all be the same kebab-case string** (e.g. `vssw-scaffold-ktor-controller`).
 
-- **Directory**: `vssw-scaffold-ktor-controller` (hyphenated)
-- **Frontmatter `name:`**: `vssw:scaffold-ktor-controller` (colon-separated) — this is how the skill is invoked and referenced in `templates/claude/*.md`
+Claude Code derives the invocable name from the *directory* and ignores `name:` when they disagree — so a mismatch fails silently rather than erroring. Skill names must be kebab-case; a colon (the old `vssw:foo` style) is not a valid name character.
+
+**Skills must be installed to `.claude/skills/`.** Claude Code scans only `.claude/skills/` (project) and `~/.claude/skills/` (personal) — skills anywhere else are silently ignored with no warning. Verified empirically: the identical skill directory yields no skill under `.agents/skills/` and loads fine under `.claude/skills/`.
+
+### One copy of the skills, plus an AGENTS.md pointer
+
+`bin/cli.js` installs to `.claude/skills/` **only**, and additionally writes an `AGENTS.md` that points other agents at that same directory. This is deliberate: duplicating the tree into a second location (the installer originally targeted `.agents/skills/`, which nothing reads) would commit two copies to every repo that silently drift apart. `AGENTS.md` is the cross-tool convention, and it is a *pointer*, so the skills stay single-source.
+
+The `AGENTS.md` write is idempotent and non-destructive, guarded by an HTML-comment marker: it creates the file if absent, appends the section to an existing file, and leaves the file untouched on re-run. Preserve all three behaviours when editing `writeAgentsPointer()`.
 
 Frontmatter is `name` + `description` only. The `description` is a trigger phrase — write it as "Use this skill whenever the user asks to …", because it is the only thing an agent sees when deciding whether to load the skill. The body is imperative instructions to the AI, not documentation for humans.
 

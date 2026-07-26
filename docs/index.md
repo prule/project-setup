@@ -165,7 +165,7 @@ Every repository must ship a [Dev Container](./DevContainers.md) so the environm
 - **Purpose:** The container matches CI and the deploy target exactly, so "works on my machine" stops being a category of bug. Day-one onboarding becomes "open the repo, click Reopen in Container".
 - **Standard toolchain:** Node via **fnm** (never corepack), **pnpm** installed standalone and pinned to `packageManager`, the **OpenSpec CLI** (`@fission-ai/openspec`), **Claude Code** and the **GitHub CLI** as Features, plus the JDK and the checked-in `./gradlew` wrapper for Kotlin projects.
 - **Shared caches:** A single `devcontainer-cache` volume mounted at `/cache` is shared by *every* project on the machine, holding the pnpm store and the Gradle cache. Dependencies download once per machine rather than once per project. Per-project artifacts (`node_modules`, Playwright browsers) stay in isolated volumes.
-- **Scaffolding:** Use the `vssw:scaffold-devcontainer` AI skill to create or align a project's `.devcontainer/` — it carries the templates, the pinning rules, and the verification checklist.
+- **Scaffolding:** Use the `vssw-scaffold-devcontainer` AI skill to create or align a project's `.devcontainer/` — it carries the templates, the pinning rules, and the verification checklist.
 
 ### The `run` Script
 Every repository must contain a `run` shell script in its root directory.

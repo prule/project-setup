@@ -21,6 +21,6 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 
 ## Available AI Skills
 This project has custom VSSW skills installed. Whenever asked to add features or tests, please utilize the following skills if applicable:
-- `vssw:integrate-google-form-feedback`
-- `vssw:integrate-google-form-register-interest`
-- `vssw:scaffold-playwright-screenplay-test`
+- `vssw-integrate-google-form-feedback`
+- `vssw-integrate-google-form-register-interest`
+- `vssw-scaffold-playwright-screenplay-test`

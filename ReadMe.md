@@ -26,16 +26,21 @@ If you are contributing to the playbook and want to preview your changes locally
 
 This repository isn't just a playbook of rules for human engineers to follow. It is an **Installable AI Plugin**. It contains custom AI skills that force your AI coding assistant to generate code adhering strictly to these playbook standards (e.g., using Hexagonal Architecture, HATEOAS, Expand and Contract migrations, etc.).
 
-For a full list of the 12 available skills, see the [AI Skills Hub](https://prule.github.io/project-setup/AISkills/).
+For a full list of the 13 available skills, see the [AI Skills Hub](https://prule.github.io/project-setup/AISkills/).
 
-### 🚀 1-Click Installation (For Any Local AI)
+### 🚀 1-Click Installation (Claude Code)
 To install these AI skills locally into any project, simply navigate to your project directory and run:
 
 ```bash
 npx github:prule/project-setup init
 ```
 
-This will instantly copy the Playbook's AI instructions into your project's `.agents/skills` folder. Because these are now local files, your AI assistant will immediately adhere to our standards, and the rules will be committed to version control for the rest of your team to use!
+This will instantly copy the Playbook's AI instructions into your project's `.claude/skills` folder — the location Claude Code scans for project skills. Because these are now local files, your AI assistant will immediately adhere to our standards, and the rules will be committed to version control for the rest of your team to use!
+
+Restart Claude Code after installing (or run `/skills`) so it picks up the new skills.
+
+#### Other AI assistants
+The installer also writes an **`AGENTS.md`** pointing at `.claude/skills/` (appending to yours if you already have one, rather than overwriting it). `AGENTS.md` is the cross-tool convention most coding agents read, so assistants other than Claude Code are directed to the same single copy of the skills. The skills are deliberately **not** duplicated into a second directory — one location stays authoritative and cannot drift.
 
 ### Installing in Claude (Claude Projects)
 To use these playbook skills with Anthropic's web-based Claude:

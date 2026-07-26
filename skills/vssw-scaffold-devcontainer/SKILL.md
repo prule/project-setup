@@ -1,5 +1,5 @@
 ---
-name: vssw:scaffold-devcontainer
+name: vssw-scaffold-devcontainer
 description: >
   Use this skill whenever the user asks to add, set up, standardise, or align a
   Dev Container (devcontainer) for a project — a reproducible, zero-host-setup

@@ -19,8 +19,8 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 
 ## Available AI Skills
 This project has custom VSSW skills installed. Whenever asked to scaffold or modify code, please utilize the following skills if applicable:
-- `vssw:scaffold-ktor-controller`
-- `vssw:scaffold-ktor-repository`
-- `vssw:scaffold-ktor-search-criteria`
-- `vssw:scaffold-idempotent-api`
-- `vssw:generate-db-migration`
+- `vssw-scaffold-ktor-controller`
+- `vssw-scaffold-ktor-repository`
+- `vssw-scaffold-ktor-search-criteria`
+- `vssw-scaffold-idempotent-api`
+- `vssw-generate-db-migration`

@@ -7,7 +7,7 @@ matches CI and the deploy target exactly, so "works on my machine" stops being a
 category of bug.
 
 To scaffold or align a project to this standard, use the
-[`vssw:scaffold-devcontainer`](AISkills.md) AI skill — it carries the templates
+[`vssw-scaffold-devcontainer`](AISkills.md) AI skill — it carries the templates
 and the checklist below.
 
 ## The standard toolchain

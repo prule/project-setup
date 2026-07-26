@@ -1,5 +1,5 @@
 ---
-name: vssw:scaffold-playwright-screenplay-test
+name: vssw-scaffold-playwright-screenplay-test
 description: >
   Scaffolds a new end-to-end (E2E) test using Playwright and the Serenity / Screenplay pattern.
   Use this skill whenever asked to write an E2E test, UI test, or Playwright test for a frontend application.
