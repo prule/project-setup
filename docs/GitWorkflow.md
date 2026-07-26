@@ -29,9 +29,9 @@ We follow the **Conventional Commits** standard. This makes the history readable
 - **Keep PRs Small:** Aim for PRs that can be reviewed in under 15 minutes (typically under 400 lines of change).
 - **Descriptive Titles & Descriptions:** The PR title should be a conventional commit. The description should explain *why* the change is made, not just *what* changed.
 - **Review Culture:** 
-  - Be kind and constructive.
-  - Ask questions instead of making demands (e.g., "What do you think about extracting this function?" instead of "Extract this function.").
-  - Approve when the code is better than it was, even if it's not perfect. Perfect is the enemy of good.
+    - Be kind and constructive.
+    - Ask questions instead of making demands (e.g., "What do you think about extracting this function?" instead of "Extract this function.").
+    - Approve when the code is better than it was, even if it's not perfect. Perfect is the enemy of good.
 - **CI Checks:** All PRs must pass automated formatting, linting, and tests before they can be merged.
 
 ## 4. Keeping `main` Deployable (Breaking Down Work)
@@ -43,18 +43,18 @@ Because `main` must *always* be in a deployable state, a large feature should ra
 Instead of one giant PR containing the database changes, backend API routes, and frontend UI, break it down logically:
 
 1. **PR 1: Database Migrations & Models (Hidden)**
-   - Add the `user_profiles` table (via Flyway) and the corresponding backend Entity/Repository.
-   - *Result:* Safely merged. The app works as before; the new table is simply sitting empty.
+    - Add the `user_profiles` table (via Flyway) and the corresponding backend Entity/Repository.
+    - *Result:* Safely merged. The app works as before; the new table is simply sitting empty.
 2. **PR 2: The Backend API (Hidden)**
-   - Add the REST controllers and services (`GET /api/users/{id}/profile`, etc.).
-   - Add unit and integration tests.
-   - *Result:* Safely merged. The API exists and is tested, but the frontend doesn't call it yet.
+    - Add the REST controllers and services (`GET /api/users/{id}/profile`, etc.).
+    - Add unit and integration tests.
+    - *Result:* Safely merged. The API exists and is tested, but the frontend doesn't call it yet.
 3. **PR 3: Frontend UI Components (Hidden / Dark Launched)**
-   - Build the React components and the new route (e.g., `/profile`).
-   - Do *not* add the navigation link to the main menu yet (or hide the route behind a feature flag).
-   - *Result:* Safely merged. Developers can manually navigate to the URL to test it, but regular users won't stumble upon it.
+    - Build the React components and the new route (e.g., `/profile`).
+    - Do *not* add the navigation link to the main menu yet (or hide the route behind a feature flag).
+    - *Result:* Safely merged. Developers can manually navigate to the URL to test it, but regular users won't stumble upon it.
 4. **PR 4: The Reveal (Live)**
-   - Add the "My Profile" button to the main navigation menu.
-   - *Result:* Safely merged. The feature is now officially live and accessible to all users.
+    - Add the "My Profile" button to the main navigation menu.
+    - *Result:* Safely merged. The feature is now officially live and accessible to all users.
 
 By slicing the work incrementally like this, we avoid "merge hell," drastically reduce the blast radius of bugs, and ensure our `main` branch is continuously deliverable.

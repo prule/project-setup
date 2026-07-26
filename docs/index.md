@@ -24,6 +24,7 @@ For deep-dives into specific topics and conventions, please refer to our dedicat
 - [Observability & Incident Response](./Observability.md)
 - [Third-Party Integrations (Build vs. Buy)](./Integrations.md)
 - [Disaster Recovery & Backups](./DisasterRecovery.md)
+- [Dev Containers](./DevContainers.md)
 - [Developer Onboarding (Day One)](./Onboarding.md)
 
 ---
@@ -52,8 +53,8 @@ All frontend projects should utilize the following core stack:
 - **Package Manager:** PNPM (Node 24 required). PNPM ensures efficient and fast `node_modules` storage.
 - **PWA Integration:** Use `vite-plugin-pwa` with `generateSW` to configure the service worker. Implement the prompt-for-update behavior when code is updated.
 - **State Management & Fetching:** 
-  - **TanStack Query (React Query)** for async state and data fetching.
-  - **Zustand** or **React Context** for purely local UI state.
+    - **TanStack Query (React Query)** for async state and data fetching.
+    - **Zustand** or **React Context** for purely local UI state.
 - **Styling:** Tailwind CSS.
 - **Component Architecture:** Focus on clean code and highly reusable components. Always use the latest stable package versions.
 
@@ -61,8 +62,8 @@ All frontend projects should utilize the following core stack:
 
 - **Unit/Integration Tests:** Vitest.
 - **E2E Tests:** Playwright combined with **Serenity BDD**.
-  - Must use the **Screenplay Pattern**.
-  - Enable Serenity Reports for clear, business-readable test documentation.
+    - Must use the **Screenplay Pattern**.
+    - Enable Serenity Reports for clear, business-readable test documentation.
 
 ---
 
@@ -73,13 +74,13 @@ If the project requires a REST API, adhere to these standards:
 - **Language:** Kotlin.
 - **Architecture:** Hexagonal / Clean Architecture.
 - **Framework & Database:**
-  - **Spring Boot with JPA** backed by **PostgreSQL** (Default choice for standard and enterprise apps).
-  - **Ktor with Exposed** backed by **PostgreSQL** (Alternative for lightweight, high-performance microservices).
-  - **Supabase** (Alternative Backend-as-a-Service option providing PostgreSQL, auth, and real-time APIs).
+    - **Spring Boot with JPA** backed by **PostgreSQL** (Default choice for standard and enterprise apps).
+    - **Ktor with Exposed** backed by **PostgreSQL** (Alternative for lightweight, high-performance microservices).
+    - **Supabase** (Alternative Backend-as-a-Service option providing PostgreSQL, auth, and real-time APIs).
 - **API Design & Requirements:**
-  - Standardized with **OpenAPI**.
-  - Implement **HATEOAS** links in resource responses, dynamically adjusting based on resource state and user permissions.
-  - **Version Endpoint:** Backends must expose an endpoint returning the application version (e.g., via Spring Boot Actuator).
+    - Standardized with **OpenAPI**.
+    - Implement **HATEOAS** links in resource responses, dynamically adjusting based on resource state and user permissions.
+    - **Version Endpoint:** Backends must expose an endpoint returning the application version (e.g., via Spring Boot Actuator).
 
 ---
 
@@ -90,10 +91,10 @@ For projects requiring a PostgreSQL backend, database schemas and migrations are
 - **Migration Tool:** Flyway.
 - **Execution Strategy:** Migrations must be applied automatically on application startup (e.g., via Spring Boot's native Flyway integration) to ensure the database schema is always in sync with the application code.
 - **Data Modeling Conventions:**
-  - Use `snake_case` for all table and column names.
-  - Use plural names for tables (e.g., `users`, `orders`).
-  - Use explicit UUIDs as primary keys by default.
-  - All tables must include `created_at` and `updated_at` timestamp columns for auditing purposes.
+    - Use `snake_case` for all table and column names.
+    - Use plural names for tables (e.g., `users`, `orders`).
+    - Use explicit UUIDs as primary keys by default.
+    - All tables must include `created_at` and `updated_at` timestamp columns for auditing purposes.
 
 ### Zero-Downtime Migrations (Expand and Contract Pattern)
 Because multiple instances of the backend may be running simultaneously during a deployment, **all database migrations must be backwards compatible**. A new version of the application might run alongside the old version for several minutes during a rolling update.
@@ -123,9 +124,9 @@ Code must be automatically formatted on commit using **Husky** and **lint-staged
 - **CI Provider:** GitHub Actions (GitHub CI).
 - **Dependency Management:** Use **Renovate** to automatically keep dependencies up to date.
 - **Versioning Strategy:**
-  - **Unified Monorepo Versioning:** If the frontend and backend reside in the same repository, they should share the exact same version number (Lockstep Versioning). A single global version is bumped for the entire repository regardless of which files changed.
-  - A custom GitHub Action should bump the **minor version** (e.g., triggering `npm version minor` and updating `gradle.properties` / `build.gradle.kts`) on every merge to the `main` branch.
-  - The unified version number must be visible within the app UI (e.g., footer or settings page) and returned by the backend version endpoint.
+    - **Unified Monorepo Versioning:** If the frontend and backend reside in the same repository, they should share the exact same version number (Lockstep Versioning). A single global version is bumped for the entire repository regardless of which files changed.
+    - A custom GitHub Action should bump the **minor version** (e.g., triggering `npm version minor` and updating `gradle.properties` / `build.gradle.kts`) on every merge to the `main` branch.
+    - The unified version number must be visible within the app UI (e.g., footer or settings page) and returned by the backend version endpoint.
 
 ---
 
@@ -133,8 +134,8 @@ Code must be automatically formatted on commit using **Husky** and **lint-staged
 
 - **Hosting:** Deploy frontend applications to **Cloudflare Pages**.
 - **Analytics:** Cloudflare Web Analytics.
-  - Use the "Auto" integration method from the Cloudflare Dashboard (Cloudflare Dashboard → Pages project → Metrics tab → enable Web Analytics). This requires zero code and no tokens.
-  - **Privacy Advantage:** Cloudflare Web Analytics is privacy-first. It does not use client-side state (like cookies or `localStorage`) to track users across sites or collect personal data. Therefore, it **does not require a GDPR cookie banner** or tracking consent prompt, keeping the UI clean and legally compliant by default.
+    - Use the "Auto" integration method from the Cloudflare Dashboard (Cloudflare Dashboard → Pages project → Metrics tab → enable Web Analytics). This requires zero code and no tokens.
+    - **Privacy Advantage:** Cloudflare Web Analytics is privacy-first. It does not use client-side state (like cookies or `localStorage`) to track users across sites or collect personal data. Therefore, it **does not require a GDPR cookie banner** or tracking consent prompt, keeping the UI clean and legally compliant by default.
 - **Legal/Privacy:** Ensure a privacy page exists (e.g., `https://portfolio.vamonossoftware.com/privacy`).
 
 ---
@@ -157,6 +158,14 @@ Avoid heavy backend setups just for form collection. Instead, leverage Google Sh
 ---
 
 ## 10. Developer Experience (DX)
+
+### Dev Containers
+Every repository must ship a [Dev Container](./DevContainers.md) so the environment is identical in **VS Code**, **IntelliJ IDEA**, and **WebStorm**, with no host setup beyond Docker and an editor.
+
+- **Purpose:** The container matches CI and the deploy target exactly, so "works on my machine" stops being a category of bug. Day-one onboarding becomes "open the repo, click Reopen in Container".
+- **Standard toolchain:** Node via **fnm** (never corepack), **pnpm** installed standalone and pinned to `packageManager`, the **OpenSpec CLI** (`@fission-ai/openspec`), **Claude Code** and the **GitHub CLI** as Features, plus the JDK and the checked-in `./gradlew` wrapper for Kotlin projects.
+- **Shared caches:** A single `devcontainer-cache` volume mounted at `/cache` is shared by *every* project on the machine, holding the pnpm store and the Gradle cache. Dependencies download once per machine rather than once per project. Per-project artifacts (`node_modules`, Playwright browsers) stay in isolated volumes.
+- **Scaffolding:** Use the `vssw:scaffold-devcontainer` AI skill to create or align a project's `.devcontainer/` — it carries the templates, the pinning rules, and the verification checklist.
 
 ### The `run` Script
 Every repository must contain a `run` shell script in its root directory.
