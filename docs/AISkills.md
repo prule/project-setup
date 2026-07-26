@@ -17,6 +17,7 @@ By installing these skills into your local AI environment, your AI coding assist
 9. **`vssw:integrate-google-form-register-interest`**: Implements a "waitlist" or email capture mechanism using a headless Google Form submission.
 10. **`vssw:setup-git-hooks`**: Generates native Git hooks (using `.githooks` and `core.hooksPath`) for automatic formatting/linting on commit.
 11. **`vssw:audit-project-compliance`**: Scans the current project to ensure it meets the playbook's strict standards (e.g., checks for `./run`, `pnpm`, PWA setup, Serenity/Screenplay E2E tests, and Hexagonal Architecture).
+12. **`vssw:scaffold-devcontainer`**: Scaffolds (or aligns) a project's [Dev Container](DevContainers.md) to the standard — Node via fnm, standalone pnpm, the OpenSpec CLI, Claude Code + GitHub CLI, Java/Gradle, and the shared pnpm/Gradle caches. Ships templates for the frontend, Kotlin/Gradle, and docker-in-docker variants.
 
 ## Installation
 
