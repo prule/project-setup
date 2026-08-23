@@ -9,14 +9,25 @@ echo "==> {{PROJECT_NAME}} dev container: provisioning"
 # 1. Volume ownership. Named volumes are created root-owned. This MUST come
 #    first: mounting a volume at ~/.cache/ms-playwright makes Docker create the
 #    ~/.cache parent root-owned, breaking corepack/pnpm/installers otherwise.
-#    Chown /cache/pnpm-store (+ /cache/gradle if used) NON-recursively; never
-#    recurse /cache — it is shared with every other dev container.
-#    (Do NOT chown /var/lib/docker — the docker-in-docker feature owns it.)
+#    Chown the SHARED volumes NON-recursively (/cache/pnpm-store, /cache/gradle
+#    if used, ~/.claude, ~/.config/gh) — they are shared with every other dev
+#    container on this machine, so recursing wastes time and can fight another
+#    container. (Do NOT chown /var/lib/docker — the dind feature owns it.)
 echo "==> Fixing volume ownership"
-sudo mkdir -p node_modules ~/.cache/ms-playwright /cache/pnpm-store
+sudo mkdir -p node_modules ~/.cache/ms-playwright ~/.claude ~/.config/gh /cache/pnpm-store
 sudo chown -R vscode:vscode node_modules ~/.cache ~/.cache/ms-playwright
-sudo chown vscode:vscode /cache/pnpm-store
+sudo chown vscode:vscode /cache/pnpm-store ~/.claude ~/.config ~/.config/gh
 # Kotlin/Gradle only: sudo mkdir -p /cache/gradle && sudo chown vscode:vscode /cache/gradle
+
+# 1b. Migrate a pre-CLAUDE_CONFIG_DIR login. Claude Code used to keep the
+#     account in ~/.claude.json ($HOME, unmounted) while the tokens sat in
+#     ~/.claude/.credentials.json (the volume) — so a rebuild dropped the
+#     account and forced a re-login. CLAUDE_CONFIG_DIR (devcontainer.json)
+#     now puts both on the shared volume; carry any stray $HOME copy over once.
+if [ -f ~/.claude.json ] && [ ! -f ~/.claude/.claude.json ]; then
+  echo "==> Migrating ~/.claude.json onto the shared claude volume"
+  mv ~/.claude.json ~/.claude/.claude.json
+fi
 
 # 2. Toolchain. Sync Node to the repo pin (fnm reads .node-version / .nvmrc).
 export FNM_DIR="$HOME/.fnm"

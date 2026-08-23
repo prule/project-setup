@@ -23,28 +23,48 @@
   "forwardPorts": [{{PORTS}}],
 
   // Volumes — see docs/DevContainers.md "Shared repositories".
-  //   SHARED across every dev container (one download per machine):
+  //   SHARED across every dev container (one download / one login per machine):
   //     - devcontainer-cache -> /cache : holds the pnpm store (/cache/pnpm-store)
   //       AND the Gradle cache (/cache/gradle). Name + path are the sharing
   //       mechanism — never rename per project.
+  //     - devcontainer-claude -> ~/.claude, devcontainer-gh -> ~/.config/gh :
+  //       the `claude` and `gh` logins, so you log in ONCE per machine and the
+  //       login survives every rebuild. Same rule — never rename per project,
+  //       and keep the CLAUDE_CONFIG_DIR / GH_CONFIG_DIR vars below, without
+  //       which these volumes persist everything EXCEPT the credentials.
   //   PER-PROJECT (isolated, disposable):
   //     - node_modules  : keeps host native binaries out of the Linux container.
   //     - ms-playwright : browsers; NOT shared (GC across projects deletes them).
   //     - <name>-dind   : nested Docker images, ONLY with docker-in-docker.
-  //     - <name>-claude / <name>-gh : OPTIONAL, persist CLI logins across rebuilds.
   // NEVER mount a volume at ~/.local/share/pnpm (PNPM_HOME) — it shadows the
   // baked-in standalone pnpm.
   "mounts": [
     "source={{PROJECT_NAME}}-node-modules,target=${containerWorkspaceFolder}/node_modules,type=volume",
     "source=devcontainer-cache,target=/cache,type=volume",
-    "source={{PROJECT_NAME}}-playwright,target=/home/vscode/.cache/ms-playwright,type=volume"
+    "source={{PROJECT_NAME}}-playwright,target=/home/vscode/.cache/ms-playwright,type=volume",
+    "source=devcontainer-claude,target=/home/vscode/.claude,type=volume",
+    "source=devcontainer-gh,target=/home/vscode/.config/gh,type=volume"
   ],
 
   // containerEnv (NOT remoteEnv) so every process inherits it. Add
   // GRADLE_USER_HOME only for Kotlin/Gradle projects (shared Gradle cache).
+  //
+  // CLAUDE_CONFIG_DIR / GH_CONFIG_DIR are NOT optional — they are what make the
+  // login volumes above actually hold the credentials:
+  //   - Claude Code splits its state: the tokens go to ~/.claude/.credentials.json
+  //     (on the volume) but the ACCOUNT lives in ~/.claude.json, a file in $HOME
+  //     that no volume covers, so every rebuild forced a fresh login.
+  //     CLAUDE_CONFIG_DIR relocates it to ~/.claude/.claude.json.
+  //   - gh resolves its config dir from $XDG_CONFIG_HOME/gh, and the JetBrains
+  //     backend re-points XDG_CONFIG_HOME at /.jbdevcontainer/config (the same
+  //     gotcha that bites pnpm's store-dir) — so `gh auth login` wrote to a
+  //     throwaway dir, never the mounted ~/.config/gh. GH_CONFIG_DIR is
+  //     absolute and outranks XDG.
   "containerEnv": {
     "PLAYWRIGHT_BROWSERS_PATH": "/home/vscode/.cache/ms-playwright",
-    "OPENSPEC_TELEMETRY": "0"
+    "OPENSPEC_TELEMETRY": "0",
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
+    "GH_CONFIG_DIR": "/home/vscode/.config/gh"
     // , "GRADLE_USER_HOME": "/cache/gradle"
   },
 
