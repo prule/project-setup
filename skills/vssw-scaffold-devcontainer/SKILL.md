@@ -59,9 +59,9 @@ Then apply the stack-specific edits the template comments call out:
   (e.g. Supabase) in post-create.
 - **App in a subdir / multiple pnpm projects**: run the install (and Playwright)
   in each project dir; the shared-store setting is global (set once).
-- **Optional credential persistence**: add `<name>-claude` → `~/.claude` and
-  `<name>-gh` → `~/.config/gh` volumes (chown them in post-create) so `claude`
-  and `gh` logins survive rebuilds.
+- **Credential persistence is already in the template** (`devcontainer-claude`
+  / `devcontainer-gh` + `CLAUDE_CONFIG_DIR` / `GH_CONFIG_DIR`) — keep it, and
+  keep the volume names machine-wide. See non-negotiable 7.
 - Trim VS Code extensions / JetBrains backend to what the project actually uses.
 
 Make `post-create.sh` executable (`chmod +x`).
@@ -84,6 +84,26 @@ Make `post-create.sh` executable (`chmod +x`).
    key breaks `apt-get update` and thus Playwright `--with-deps`.
 6. **Fixed `--name`**: only one orchestrator can own it; a stale container 409s a
    rebuild — recover with `docker rm -f <name>-dev`.
+7. **`claude` / `gh` logins need a shared volume AND a config-dir env var** —
+   the volume alone silently persists everything except the credentials:
+   - Volumes `devcontainer-claude` → `~/.claude` and `devcontainer-gh` →
+     `~/.config/gh`, named **machine-wide, never `<name>-claude`** — the source
+     name is the sharing mechanism (same rule as `devcontainer-cache`), so one
+     login covers every project.
+   - `CLAUDE_CONFIG_DIR=/home/vscode/.claude` in `containerEnv`. Claude Code
+     splits its state: tokens in `~/.claude/.credentials.json` (on the volume),
+     but the **account in `~/.claude.json`**, a `$HOME` file no volume covers —
+     lose it and you re-login every rebuild. Post-create migrates any stray
+     `$HOME` copy onto the volume.
+   - `GH_CONFIG_DIR=/home/vscode/.config/gh` in `containerEnv`. `gh` derives its
+     config dir from `$XDG_CONFIG_HOME/gh`, and the **JetBrains backend
+     re-points `XDG_CONFIG_HOME` at `/.jbdevcontainer/config`** (the same gotcha
+     that breaks pnpm's `store-dir`), so `gh auth login` writes to a throwaway
+     dir instead of the mount. `GH_CONFIG_DIR` is absolute and outranks XDG.
+   - Chown these two mount points **non-recursively** — they are shared.
+   - Adopting this on an existing project: copy the old per-project volumes over
+     first, e.g. `docker run --rm -v <name>-claude:/from -v
+     devcontainer-claude:/to alpine cp -a /from/. /to/`.
 
 ## 5. Build and verify (actually run these)
 
@@ -100,6 +120,11 @@ Then, inside the container (`devcontainer exec --workspace-folder . bash -ic '�
 
 - `node --version` / `pnpm --version` match the pins; `openspec --version` is 1.6.x.
 - `gh`, `claude` resolve; `java -version` (if applicable); nested `docker run hello-world` (if dind).
+- **Logins persist**: `gh auth status` and `claude` are still logged in after a
+  rebuild — `echo $CLAUDE_CONFIG_DIR $GH_CONFIG_DIR` is set, and
+  `ls ~/.claude/.claude.json ~/.claude/.credentials.json ~/.config/gh/hosts.yml`
+  all exist (check from a **JetBrains-launched** terminal too, where
+  `XDG_CONFIG_HOME` differs).
 - **Shared store used**: `pnpm store path` → `/cache/pnpm-store/v...`, and
   `node_modules/.modules.yaml` records that `storeDir`. No `.pnpm-store` in the repo.
 - The project's own **lint / build / unit tests** pass; Chromium launches.

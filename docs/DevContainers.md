@@ -41,8 +41,11 @@ Docker volumes**, split into two kinds.
 
 ### Shared across every dev container (download once per machine)
 
-One volume — **`devcontainer-cache`** mounted at **`/cache`** — is shared by
-*every* project's container. A package or Gradle dependency downloaded by one
+Three volumes are shared by *every* project's container: **`devcontainer-cache`**
+at **`/cache`** (dependencies), plus **`devcontainer-claude`** at `~/.claude` and
+**`devcontainer-gh`** at `~/.config/gh` (CLI logins — see below).
+
+`devcontainer-cache` at `/cache` is shared by *every* project's container. A package or Gradle dependency downloaded by one
 project is already present for the next, and it survives rebuilds.
 
 - **pnpm store** → `/cache/pnpm-store`. Set in post-create with
@@ -55,6 +58,38 @@ project is already present for the next, and it survives rebuilds.
 !!! warning "The source name is the sharing mechanism"
     `devcontainer-cache` / `/cache` must be **identical** across projects. A
     project-scoped name or a different mount path silently un-shares the cache.
+    The same applies to `devcontainer-claude` / `devcontainer-gh` below.
+
+### `claude` and `gh` logins — shared, not per project
+
+Log in **once per machine**, and the login survives every rebuild:
+
+| Volume | Mounted at | Also needs, in `containerEnv` |
+| --- | --- | --- |
+| `devcontainer-claude` | `~/.claude` | `CLAUDE_CONFIG_DIR=/home/vscode/.claude` |
+| `devcontainer-gh` | `~/.config/gh` | `GH_CONFIG_DIR=/home/vscode/.config/gh` |
+
+!!! danger "The volume alone is not enough — it persists everything except the credentials"
+    Both CLIs put their credentials somewhere the obvious mount misses, which is
+    why per-project `<name>-claude` / `<name>-gh` volumes still forced a login on
+    every rebuild:
+
+    - **Claude Code** splits its state. The tokens land in
+      `~/.claude/.credentials.json` (on the volume), but the **account** lives in
+      `~/.claude.json` — a file in `$HOME`, which no volume covers. Setting
+      `CLAUDE_CONFIG_DIR` moves it to `~/.claude/.claude.json`, onto the volume.
+    - **gh** derives its config dir from `$XDG_CONFIG_HOME/gh`, and the
+      **JetBrains backend re-points `XDG_CONFIG_HOME` at `/.jbdevcontainer/config`**
+      — the same gotcha that breaks pnpm's `store-dir`. So `gh auth login` wrote
+      `hosts.yml` into a throwaway dir and the mounted `~/.config/gh` stayed
+      empty. `GH_CONFIG_DIR` is absolute and outranks XDG.
+
+Chown these two mount points **non-recursively** in post-create (they are
+shared), and migrate an existing per-project volume with:
+
+```bash
+docker run --rm -v <name>-claude:/from -v devcontainer-claude:/to alpine cp -a /from/. /to/
+```
 
 Measured effect as projects join the shared pnpm store: `reused 0, downloaded
 979` (first project) → `reused 448, downloaded 50` (a later one); a full rebuild
@@ -67,7 +102,6 @@ dropped from ~3m to ~1m.
 | `<name>-node-modules` | `node_modules` | Keeps host (macOS/Windows) native binaries out of the Linux container |
 | `<name>-playwright` | `~/.cache/ms-playwright` | Browsers. **Never shared** — one project's `playwright install` GC's another's |
 | `<name>-dind` | `/var/lib/docker` | Only with docker-in-docker; persists the nested Supabase images |
-| `<name>-claude`, `<name>-gh` | `~/.claude`, `~/.config/gh` | Optional; persist CLI logins across rebuilds |
 
 !!! danger "Never mount a volume at `~/.local/share/pnpm` (PNPM_HOME)"
     The standalone pnpm binary is baked into the image there; a volume would
@@ -107,6 +141,8 @@ Build with `devcontainer up --workspace-folder .`, then inside the container:
 
 - [ ] `node` / `pnpm` versions match the pins; `openspec --version` is 1.6.x.
 - [ ] `gh`, `claude` resolve; `java -version` (backend); nested `docker run hello-world` (dind).
+- [ ] Logins survived the rebuild: `gh auth status` is authenticated and `claude`
+      starts without a login prompt (check from a JetBrains terminal too).
 - [ ] `pnpm store path` → `/cache/pnpm-store/v...`, recorded in `node_modules/.modules.yaml`; no `.pnpm-store` in the repo.
 - [ ] The project's own **lint / build / unit tests** pass; Chromium launches.
 - [ ] Then `docker rm -f <name>-dev` so the IDE owns the container on next open.
