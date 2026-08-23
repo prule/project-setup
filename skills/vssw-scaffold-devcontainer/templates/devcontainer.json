@@ -32,16 +32,18 @@
   //       login survives every rebuild. Same rule — never rename per project,
   //       and keep the CLAUDE_CONFIG_DIR / GH_CONFIG_DIR vars below, without
   //       which these volumes persist everything EXCEPT the credentials.
+  //     - devcontainer-playwright -> ~/.cache/ms-playwright : the browsers
+  //       (~1GB a set, once per machine instead of once per project). Safe ONLY
+  //       with PLAYWRIGHT_SKIP_BROWSER_GC below — see the note there.
   //   PER-PROJECT (isolated, disposable):
   //     - node_modules  : keeps host native binaries out of the Linux container.
-  //     - ms-playwright : browsers; NOT shared (GC across projects deletes them).
   //     - <name>-dind   : nested Docker images, ONLY with docker-in-docker.
   // NEVER mount a volume at ~/.local/share/pnpm (PNPM_HOME) — it shadows the
   // baked-in standalone pnpm.
   "mounts": [
     "source={{PROJECT_NAME}}-node-modules,target=${containerWorkspaceFolder}/node_modules,type=volume",
     "source=devcontainer-cache,target=/cache,type=volume",
-    "source={{PROJECT_NAME}}-playwright,target=/home/vscode/.cache/ms-playwright,type=volume",
+    "source=devcontainer-playwright,target=/home/vscode/.cache/ms-playwright,type=volume",
     "source=devcontainer-claude,target=/home/vscode/.claude,type=volume",
     "source=devcontainer-gh,target=/home/vscode/.config/gh,type=volume"
   ],
@@ -60,8 +62,21 @@
   //     gotcha that bites pnpm's store-dir) — so `gh auth login` wrote to a
   //     throwaway dir, never the mounted ~/.config/gh. GH_CONFIG_DIR is
   //     absolute and outranks XDG.
+  //
+  // PLAYWRIGHT_SKIP_BROWSER_GC is what makes the SHARED browser volume safe.
+  // Playwright tracks who uses each browser via `.links/<sha1>` files holding an
+  // ABSOLUTE path to that project's playwright-core — which lives on the
+  // per-project node_modules volume, invisible from any other container. So on
+  // `playwright install`, project B sees project A's link pointing at a missing
+  // dir, calls it broken, and GCs every browser nothing else references
+  // (registry's _validateInstallationCache -> _deleteStaleBrowsers /
+  // _deleteBrokenInstallations). This var skips that validation. Browsers are
+  // revision-keyed (chromium-1234) so mixed Playwright versions coexist, and the
+  // installer holds a lockfile so concurrent installs serialise. Trade-off:
+  // nothing reclaims superseded revisions — sweep the volume now and then.
   "containerEnv": {
     "PLAYWRIGHT_BROWSERS_PATH": "/home/vscode/.cache/ms-playwright",
+    "PLAYWRIGHT_SKIP_BROWSER_GC": "1",
     "OPENSPEC_TELEMETRY": "0",
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
     "GH_CONFIG_DIR": "/home/vscode/.config/gh"

@@ -62,6 +62,8 @@ Then apply the stack-specific edits the template comments call out:
 - **Credential persistence is already in the template** (`devcontainer-claude`
   / `devcontainer-gh` + `CLAUDE_CONFIG_DIR` / `GH_CONFIG_DIR`) — keep it, and
   keep the volume names machine-wide. See non-negotiable 7.
+- **The Playwright browser volume is shared too** (`devcontainer-playwright` +
+  `PLAYWRIGHT_SKIP_BROWSER_GC`) — keep both. See non-negotiable 8.
 - Trim VS Code extensions / JetBrains backend to what the project actually uses.
 
 Make `post-create.sh` executable (`chmod +x`).
@@ -79,7 +81,8 @@ Make `post-create.sh` executable (`chmod +x`).
    purge). The shared volume MUST be named `devcontainer-cache` at `/cache`.
 4. **Chown `~/.cache` before anything writes to it.** Mounting the Playwright
    volume makes Docker create `~/.cache` root-owned; put the whole ownership
-   block first in post-create.
+   block first in post-create. Chown `~/.cache/ms-playwright` itself
+   NON-recursively — it is shared.
 5. **java base image**: remove `/etc/apt/sources.list.d/yarn.list` — its expired
    key breaks `apt-get update` and thus Playwright `--with-deps`.
 6. **Fixed `--name`**: only one orchestrator can own it; a stale container 409s a
@@ -104,6 +107,26 @@ Make `post-create.sh` executable (`chmod +x`).
    - Adopting this on an existing project: copy the old per-project volumes over
      first, e.g. `docker run --rm -v <name>-claude:/from -v
      devcontainer-claude:/to alpine cp -a /from/. /to/`.
+8. **The shared Playwright volume needs `PLAYWRIGHT_SKIP_BROWSER_GC=1`** —
+   without it, projects delete each other's browsers. Playwright records users
+   of a browser as `.links/<sha1>` files holding an **absolute path** to that
+   project's `playwright-core`, which sits on the per-project `node_modules`
+   volume and is therefore invisible from every other container. Project B's
+   `playwright install` reads project A's link, finds the path missing, calls it
+   broken, and GCs the browsers nothing else references
+   (`_validateInstallationCache` → `_deleteStaleBrowsers` +
+   `_deleteBrokenInstallations`). Verified: seed a foreign `.links` entry and a
+   `chromium-9999` directory into the cache — with the var set both survive an
+   install, without it both are deleted.
+   - Volume `devcontainer-playwright` → `~/.cache/ms-playwright`, machine-wide,
+     alongside `PLAYWRIGHT_BROWSERS_PATH`.
+   - Safe because browsers are revision-keyed (`chromium-1234`), so mixed
+     Playwright versions coexist, and the installer holds a lockfile, so
+     concurrent installs across containers serialise.
+   - Cost: nothing reclaims superseded revisions. Sweep old ones occasionally.
+   - Migrating: `docker run --rm -v <name>-playwright:/from -v
+     devcontainer-playwright:/to alpine cp -a /from/. /to/` so the ~1GB of
+     browsers isn't re-downloaded.
 
 ## 5. Build and verify (actually run these)
 
@@ -127,6 +150,9 @@ Then, inside the container (`devcontainer exec --workspace-folder . bash -ic '�
   `XDG_CONFIG_HOME` differs).
 - **Shared store used**: `pnpm store path` → `/cache/pnpm-store/v...`, and
   `node_modules/.modules.yaml` records that `storeDir`. No `.pnpm-store` in the repo.
+- **Browsers shared, not GC'd**: `echo $PLAYWRIGHT_SKIP_BROWSER_GC` is `1` and
+  `ls ~/.cache/ms-playwright` shows the revision dirs (`chromium-<rev>`) that
+  other projects also use.
 - The project's own **lint / build / unit tests** pass; Chromium launches.
 - Then `docker rm -f {{PROJECT_NAME}}-dev` so the IDE owns the container.
 
