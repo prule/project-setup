@@ -10,13 +10,14 @@ echo "==> {{PROJECT_NAME}} dev container: provisioning"
 #    first: mounting a volume at ~/.cache/ms-playwright makes Docker create the
 #    ~/.cache parent root-owned, breaking corepack/pnpm/installers otherwise.
 #    Chown the SHARED volumes NON-recursively (/cache/pnpm-store, /cache/gradle
-#    if used, ~/.claude, ~/.config/gh) — they are shared with every other dev
-#    container on this machine, so recursing wastes time and can fight another
-#    container. (Do NOT chown /var/lib/docker — the dind feature owns it.)
+#    if used, ~/.cache/ms-playwright, ~/.claude, ~/.config/gh) — they are shared
+#    with every other dev container on this machine, so recursing wastes time and
+#    can fight another container.
+#    (Do NOT chown /var/lib/docker — the dind feature owns it.)
 echo "==> Fixing volume ownership"
 sudo mkdir -p node_modules ~/.cache/ms-playwright ~/.claude ~/.config/gh /cache/pnpm-store
-sudo chown -R vscode:vscode node_modules ~/.cache ~/.cache/ms-playwright
-sudo chown vscode:vscode /cache/pnpm-store ~/.claude ~/.config ~/.config/gh
+sudo chown -R vscode:vscode node_modules
+sudo chown vscode:vscode /cache/pnpm-store ~/.cache ~/.cache/ms-playwright ~/.claude ~/.config ~/.config/gh
 # Kotlin/Gradle only: sudo mkdir -p /cache/gradle && sudo chown vscode:vscode /cache/gradle
 
 # 1b. Migrate a pre-CLAUDE_CONFIG_DIR login. Claude Code used to keep the

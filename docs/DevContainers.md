@@ -41,9 +41,11 @@ Docker volumes**, split into two kinds.
 
 ### Shared across every dev container (download once per machine)
 
-Three volumes are shared by *every* project's container: **`devcontainer-cache`**
-at **`/cache`** (dependencies), plus **`devcontainer-claude`** at `~/.claude` and
-**`devcontainer-gh`** at `~/.config/gh` (CLI logins — see below).
+Four volumes are shared by *every* project's container: **`devcontainer-cache`**
+at **`/cache`** (dependencies), **`devcontainer-claude`** at `~/.claude` and
+**`devcontainer-gh`** at `~/.config/gh` (CLI logins), and
+**`devcontainer-playwright`** at `~/.cache/ms-playwright` (browsers) — each
+covered below.
 
 `devcontainer-cache` at `/cache` is shared by *every* project's container. A package or Gradle dependency downloaded by one
 project is already present for the next, and it survives rebuilds.
@@ -58,7 +60,8 @@ project is already present for the next, and it survives rebuilds.
 !!! warning "The source name is the sharing mechanism"
     `devcontainer-cache` / `/cache` must be **identical** across projects. A
     project-scoped name or a different mount path silently un-shares the cache.
-    The same applies to `devcontainer-claude` / `devcontainer-gh` below.
+    The same applies to `devcontainer-claude` / `devcontainer-gh` /
+    `devcontainer-playwright` below.
 
 ### `claude` and `gh` logins — shared, not per project
 
@@ -95,12 +98,53 @@ Measured effect as projects join the shared pnpm store: `reused 0, downloaded
 979` (first project) → `reused 448, downloaded 50` (a later one); a full rebuild
 dropped from ~3m to ~1m.
 
+### Playwright browsers — shared, with GC disabled
+
+A full browser set is ~1GB, and it used to be duplicated per project. Share it:
+
+| Volume | Mounted at | Also needs, in `containerEnv` |
+| --- | --- | --- |
+| `devcontainer-playwright` | `~/.cache/ms-playwright` | `PLAYWRIGHT_BROWSERS_PATH=/home/vscode/.cache/ms-playwright` **and** `PLAYWRIGHT_SKIP_BROWSER_GC=1` |
+
+!!! danger "Sharing without `PLAYWRIGHT_SKIP_BROWSER_GC=1` makes projects delete each other's browsers"
+    Playwright tracks who uses each browser with `.links/<sha1>` files holding an
+    **absolute path** to that project's `playwright-core`:
+
+    ```
+    .links/6a28addc… -> /IdeaProjects/homefleet/node_modules/.pnpm/playwright-core@1.62.1/node_modules/playwright-core
+    ```
+
+    That path is on the **per-project `node_modules` volume**, invisible from any
+    other container. So project B's `playwright install` finds project A's link
+    pointing at a missing directory, treats it as *broken*, and garbage-collects
+    every browser nothing else references — `_validateInstallationCache` →
+    `_deleteStaleBrowsers` + `_deleteBrokenInstallations` in playwright-core's
+    registry. It is our `node_modules` isolation colliding with a host-shaped
+    cache, not a Playwright bug.
+
+    The env var skips that validation:
+
+    ```js
+    if (options?.gc !== false && !getAsBooleanFromENV("PLAYWRIGHT_SKIP_BROWSER_GC"))
+      await this._validateInstallationCache(linksDir);
+    ```
+
+Two properties make the shared directory safe once GC is off: browsers are
+**revision-keyed** (`chromium-1234`), so projects on different Playwright
+versions coexist rather than overwrite; and the installer holds a **lockfile**
+(20 retries, exponential backoff), so concurrent installs serialise.
+
+!!! warning "The trade-off: nothing reclaims superseded revisions"
+    With GC off, `chromium-1233` lingers after every project moves to `-1234`.
+    Sweep the volume occasionally — delete the old revision directories, or run
+    one `playwright install` with the var unset at a moment when no *foreign*
+    `.links` entries are present.
+
 ### Per-project (isolated, disposable)
 
 | Volume | Mounted at | Notes |
 | --- | --- | --- |
 | `<name>-node-modules` | `node_modules` | Keeps host (macOS/Windows) native binaries out of the Linux container |
-| `<name>-playwright` | `~/.cache/ms-playwright` | Browsers. **Never shared** — one project's `playwright install` GC's another's |
 | `<name>-dind` | `/var/lib/docker` | Only with docker-in-docker; persists the nested Supabase images |
 
 !!! danger "Never mount a volume at `~/.local/share/pnpm` (PNPM_HOME)"
