@@ -14,7 +14,7 @@ By installing these skills into your local AI environment, your AI coding assist
 6. **`vssw-integrate-google-form-register-interest`**: Implements a "waitlist" or email capture mechanism using a headless Google Form submission.
 7. **`vssw-setup-git-hooks`**: Generates native Git hooks (using `.githooks` and `core.hooksPath`) for automatic formatting/linting on commit.
 8. **`vssw-audit-project-compliance`**: Audits the project against the engineering constitution and Playbook standards, distinguishing recorded deviations from unrecorded ones and ordering failures by consequence.
-9. **`vssw-scaffold-playwright-screenplay-test`**: Scaffolds an end-to-end test using Playwright with the Serenity/JS Screenplay pattern, as required by our [Testing Strategy](TestingGuide.md).
+9. **`vssw-scaffold-playwright-screenplay-test`**: Scaffolds an end-to-end test using Playwright with the Serenity/JS Screenplay pattern, as required by our [Testing Strategy](constitution/patterns/testing-strategy.md).
 
 10. **`vssw-bootstrap-project`**: Takes an empty folder to a project ready for spec-driven work — git, OpenSpec, the engineering constitution vendored as a subtree, a wired `openspec/config.yaml` and a `CLAUDE.md`.
 

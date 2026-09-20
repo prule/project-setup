@@ -29,33 +29,85 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.inlinehilite
 
+# The constitution's own authoring guide is not site content.
+exclude_docs: |
+  constitution/CONTRIBUTING.md
+
 nav:
   - Introduction: index.md
-  - Architecture:
-    - Clean Architecture: CleanArchitecture.md
-    - API Design & Idempotency: ApiDesign.md
-  - Code & Conventions:
-    - Clean Code Guidelines: CleanCode.md
+  - Engineering Constitution:
+    - Overview: constitution/README.md
+    - Installing It: constitution/INSTALL.md
+    - Principles — always:
+      - Overview: constitution/principles/README.md
+      - Composition Over Inheritance: constitution/principles/composition.md
+      - Dependency Inversion — Loose Coupling: constitution/principles/dependency-inversion.md
+      - DRY — Don't Repeat Yourself: constitution/principles/dry.md
+      - Fail Fast: constitution/principles/fail-fast.md
+      - KISS — Keep It Simple: constitution/principles/kiss.md
+      - Least Privilege: constitution/principles/least-privilege.md
+      - Measure First: constitution/principles/measure-first.md
+      - Open/Closed Principle: constitution/principles/open-closed.md
+      - Separation of Concerns: constitution/principles/separation-of-concerns.md
+      - SOLID: constitution/principles/solid.md
+      - SRP — Single Responsibility Principle: constitution/principles/srp.md
+      - YAGNI — You Aren't Gonna Need It: constitution/principles/yagni.md
+    - Patterns — when the problem fits:
+      - Overview: constitution/patterns/README.md
+      - Anti-Corruption Layer: constitution/patterns/anti-corruption-layer.md
+      - Contract Tests: constitution/patterns/contract-tests.md
+      - CQRS — Command Query Responsibility Segregation: constitution/patterns/cqrs.md
+      - Domain-Driven Design: constitution/patterns/domain-driven-design.md
+      - Domain Events: constitution/patterns/domain-events.md
+      - Explicit Errors: constitution/patterns/explicit-errors.md
+      - Functional Core, Imperative Shell: constitution/patterns/functional-core-imperative-shell.md
+      - Hexagonal Architecture (Ports & Adapters): constitution/patterns/hexagonal-architecture.md
+      - Make Illegal States Unrepresentable: constitution/patterns/illegal-states-unrepresentable.md
+      - Outbox & Idempotency: constitution/patterns/outbox-and-idempotency.md
+      - Repository: constitution/patterns/repository.md
+      - Screenplay: constitution/patterns/screenplay.md
+      - Test Doubles: constitution/patterns/test-doubles.md
+      - Testing Strategy: constitution/patterns/testing-strategy.md
+    - Technologies — the default stack:
+      - Overview: constitution/technologies/README.md
+      - Deployment — Cloudflare: constitution/technologies/cloudflare.md
+      - Code Formatting: constitution/technologies/formatting.md
+      - Local-First: constitution/technologies/local-first.md
+      - Packaging Beyond the Browser: constitution/technologies/packaging.md
+      - React PWA: constitution/technologies/react-pwa.md
+      - Repository Structure: constitution/technologies/repo-structure.md
+      - Spring Boot — API Layer: constitution/technologies/spring-boot-api.md
+      - Spring Boot & Kotlin: constitution/technologies/spring-boot-kotlin.md
+      - Spring Boot — Operations: constitution/technologies/spring-boot-operations.md
+      - Supabase: constitution/technologies/supabase.md
+      - Type Contracts — Contract First: constitution/technologies/type-contracts.md
+      - TypeScript, Node & Tooling: constitution/technologies/typescript.md
+    - Documentation standards:
+      - Overview: constitution/documentation/README.md
+      - Architecture Decision Records: constitution/documentation/adr.md
+      - CLAUDE.md — Agent Context: constitution/documentation/agent-context.md
+      - Comments & Docstrings: constitution/documentation/code-comments.md
+      - Commits & Changelog: constitution/documentation/commits.md
+      - Diagrams: constitution/documentation/diagrams.md
+      - OpenSpec Project Context: constitution/documentation/openspec-config.md
+      - Project README: constitution/documentation/project-readme.md
+      - Specifications — Spec-Driven: constitution/documentation/specs.md
+  - Process & Workflow:
     - Code Review Guidelines: CodeReview.md
-    - Testing Strategy: TestingGuide.md
-    - Styling & CSS: Styling.md
-  - Workflow & Deployment:
     - Git Workflow: GitWorkflow.md
     - Squash & Merge: SquashAndMerge.md
     - Feature Flags: FeatureFlags.md
     - The Way of Working (DoD): WayOfWorking.md
-  - Security & Compliance:
-    - Security Practices: Security.md
+  - Compliance & Operations:
     - Data Privacy: Privacy.md
-  - Resilience & Operations:
-    - Frontend State Management: StateManagement.md
+    - Disaster Recovery: DisasterRecovery.md
+    - Third-Party Integrations: Integrations.md
+  - Frontend Practices:
     - Frontend Resilience: FrontendResilience.md
     - Accessibility (a11y): Accessibility.md
     - Timezones & Localization: Localization.md
-    - Performance & Optimization: Performance.md
-    - Observability & Incident Response: Observability.md
-    - Third-Party Integrations: Integrations.md
-    - Disaster Recovery: DisasterRecovery.md
+  - Decisions:
+    - 0001 Playbook defers to the constitution: adr/0001-playbook-defers-to-the-engineering-constitution.md
   - Getting Started:
     - Developer Onboarding: Onboarding.md
     - AI Skills Installation: AISkills.md
