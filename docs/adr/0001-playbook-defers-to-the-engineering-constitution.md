@@ -47,5 +47,9 @@ Rejected alternatives:
 **Accepted risks.**
 - Updating the constitution now requires a `git subtree pull` in the Playbook before the site reflects it. A stale site is a new failure mode that did not exist before.
 - Constitution files are written to be loaded into context, not browsed. Some will read poorly as web pages, and the house style caps files at 15–25 lines, which limits how much narrative can be added back.
-- Three topics — accessibility, frontend resilience, localisation — are build-time technical rules still living only in the Playbook, so they remain invisible to agents in vendored projects until they are migrated. This decision does not address them.
-- `templates/claude/*.md` still restate constitution content and overlap the `vssw-bootstrap-project` skill. Also not addressed here.
+- Updating a constitution rule now requires a `git subtree pull` here before the published site reflects it.
+
+Two consequences recorded as open when this ADR was accepted have since been closed:
+
+- Accessibility, frontend resilience and localisation have been migrated into `technologies/` and their Playbook documents retired, so agents in vendored projects now see them.
+- `templates/claude/*.md` have been reduced to pointers at the constitution plus the per-project detail a `CLAUDE.md` should actually carry.

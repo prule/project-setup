@@ -1,26 +1,47 @@
-# VSSW Frontend Context (React/Vite)
+# VSSW Frontend Context (React PWA)
 
-You are an expert AI assistant specializing in the VSSW Engineering Playbook. You are assisting in building a frontend web application.
+Starting point for a frontend project's `CLAUDE.md`. Fill the placeholders and delete this line.
 
-## Core Stack
-- **Framework:** React with Vite
-- **Package Manager:** `pnpm` (Never use npm or yarn)
+## Conventions
 
-## Architectural Standards
-1. **Progressive Web App (PWA):** The application must be configured as a PWA (e.g., using Vite PWA plugins and `manifest.json`).
-2. **Local-First Architecture:** The application should prioritize offline capabilities. Use **IndexedDB** wrapped with **Dexie.js** for all local storage and data persistence.
-3. **Component Architecture:** Build natively with React components. Do not rely on generic, unstructured iFrames for application features unless explicitly instructed.
-4. **End-to-End Testing:** All E2E tests must be written using **Playwright**.
-5. **Testing Pattern:** UI interactions in tests must strictly follow the **Serenity / Screenplay** pattern for maintainability.
-6. **URL State Management:** All React applications must update the browser URL when navigating or changing major views, to support bookmarking and sharing URLs.
-7. **Essential Features:** All apps must include User Guides and Feedback Forms (backed by Google Forms using prefill).
-8. **Landing Pages:** Landing pages must include a "Register Interest" form (backed by Google Forms using prefill).
-9. **Versioning:** Do not store the version on branches or manually bump it. The application version must be derived from git history at build time (e.g., computing the minor version from the number of commits/merges on `main`) and injected via the build tool (e.g., a Vite define).
-10. **Git Hooks for Formatting:** Source code formatting with tools like lint should always be automated via a Git commit hook.
-11. **Pull Requests:** Always use squash-merge when merging Pull Requests into `main`. **Why:** So the work from a PR is recorded as one commit when merging to main, meaning the version will be bumped exactly once for each PR.
+Follow the engineering constitution, vendored at `docs/constitution/`:
 
-## Available AI Skills
-This project has custom VSSW skills installed. Whenever asked to add features or tests, please utilize the following skills if applicable:
-- `vssw-integrate-google-form-feedback`
-- `vssw-integrate-google-form-register-interest`
-- `vssw-scaffold-playwright-screenplay-test`
+- `principles/README.md` — universal, apply always
+- `patterns/README.md` — conditional, check "when not to use this"
+- `technologies/README.md` — the default stack
+- `documentation/README.md` — what to document, and where
+
+Read the four index files at the start of a task. Open individual files when a
+decision turns on them. Say so before deviating. Never edit the vendored copy —
+change it upstream and pull.
+
+The stack, PWA setup, local-first storage, accessibility, resilience, testing and
+formatting are all defined there. **Do not restate them here.** This file carries
+only what is specific to *this* application.
+
+## This application
+
+- **What it does:** <one paragraph>
+- **Local data:** <what is stored on the device, and the conflict rule>
+- **Deliberate deviations:** <none yet — record each, with an ADR under docs/adr/>
+
+## Commands
+
+```bash
+pnpm dev          # <verify every command before committing this file>
+pnpm test         # unit
+pnpm test:e2e     # Playwright, Serenity/JS Screenplay
+pnpm lint
+pnpm format
+```
+
+## Gotchas
+
+- <the design system, the fixture data, the generated files>
+
+## Skills
+
+Use the installed VSSW skills where they apply:
+`vssw-scaffold-playwright-screenplay-test`, `vssw-integrate-google-form-feedback`,
+`vssw-integrate-google-form-register-interest`, `vssw-setup-git-hooks`,
+`vssw-audit-project-compliance`.

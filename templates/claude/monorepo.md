@@ -1,38 +1,46 @@
 # VSSW Monorepo Context (Full-Stack)
 
-You are an expert AI assistant specializing in the VSSW Engineering Playbook. You are assisting in building a full-stack monorepo containing both frontend and backend services.
+Starting point for a full-stack monorepo's `CLAUDE.md`. Fill the placeholders and delete this line.
 
-## Core Stack
-- **Backend:** Kotlin, Spring Boot, Spring Data JDBC
-- **Frontend:** React, Vite, `pnpm`
+## Conventions
 
-## Global Project Standards
-1. **The `./run` Script:** The root of the repository must contain a `./run` script abstracting all build tools. It should support commands like `./run setup`, `./run serve`, and `./run build`.
-2. **Git Hooks:** Formatting and linting (e.g., lint, ktfmt, google-java-format) must always be automated via a Git commit hook (e.g., a `.githooks/pre-commit` script initialized by `git config core.hooksPath .githooks`).
-3. **CI/CD:** All deployments must be automated via GitHub Actions (`.github/workflows`).
-4. **Versioning:** Do not store versions on branches. Applications must derive their version from git history at build time (e.g., minor version = number of commits/merges on `main`) and inject it via the build tool (e.g., Vite define for frontend).
-5. **Pull Requests:** Always use squash-merge when merging Pull Requests into `main`. **Why:** So the work from a PR is recorded as one commit when merging to main, meaning the version will be bumped exactly once for each PR.
+Follow the engineering constitution, vendored at `docs/constitution/`:
 
-## Backend Architectural Standards
-- Enforce Hexagonal Architecture (Ports and Adapters).
-- Implement HATEOAS, RFC 9457 Problem Details error handling, and `Idempotency-Key` headers on unsafe `POST`s.
-- Use Flyway with the "Expand and Contract" pattern for database migrations.
+- `principles/README.md` — universal, apply always
+- `patterns/README.md` — conditional, check "when not to use this"
+- `technologies/README.md` — the default stack
+- `documentation/README.md` — what to document, and where
 
-## Frontend Architectural Standards
-- Enforce Progressive Web App (PWA) configuration.
-- Implement **Local-First Architecture** using **IndexedDB** and **Dexie.js** for local data persistence.
-- Update the browser URL when navigating or changing views to support bookmarking and sharing.
-- Include User Guides and Feedback Forms (backed by Google Forms using prefill) in all applications.
-- Include a "Register Interest" form (backed by Google Forms using prefill) on landing pages.
-- Write E2E tests using Playwright and the Serenity/JS Screenplay pattern.
+Read the four index files at the start of a task. Open individual files when a
+decision turns on them. Say so before deviating. Never edit the vendored copy —
+change it upstream and pull.
 
-## Available AI Skills
-This project has custom VSSW skills installed. Whenever asked to scaffold or modify code, please utilize the following skills if applicable:
-- `vssw-scaffold-idempotent-api`
-- `vssw-scaffold-hateoas-feature-flag`
-- `vssw-generate-db-migration`
-- `vssw-integrate-google-form-feedback`
-- `vssw-scaffold-playwright-screenplay-test`
-- `vssw-setup-git-hooks`
-- `vssw-run-script`
-- `vssw-audit-project-compliance`
+Stack, architecture, API conventions, testing, formatting and repo layout are all
+defined there. **Do not restate them here.** This file carries only what is
+specific to *this* repository.
+
+Process conventions the constitution does not cover — git workflow, squash and
+merge, definition of done — are in the Playbook.
+
+## This repository
+
+- **What it does:** <one paragraph>
+- **Layout:** <apps/*, packages/*, backend/ — what lives where>
+- **Deliberate deviations:** <none yet — record each, with an ADR under docs/adr/>
+
+## Commands
+
+```bash
+./run setup       # <verify every command before committing this file>
+./run serve
+./run build
+```
+
+## Gotchas
+
+- <cross-cutting concerns: shared types, generated clients, the order things build in>
+
+## Skills
+
+Use the installed VSSW skills where they apply. Bootstrapping a new project:
+`vssw-bootstrap-project`.

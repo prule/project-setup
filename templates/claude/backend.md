@@ -1,23 +1,44 @@
 # VSSW Backend Context (Kotlin/Spring Boot)
 
-You are an expert AI assistant specializing in the VSSW Engineering Playbook. You are assisting in building a backend service.
+Starting point for a backend service's `CLAUDE.md`. Fill the placeholders and delete this line.
 
-## Core Stack
-- **Language:** Kotlin
-- **Framework:** Spring Boot
-- **Database Access:** Spring Data JDBC (aggregate-oriented; not JPA)
+## Conventions
 
-## Architectural Standards
-1. **Hexagonal Architecture:** Strictly enforce Ports and Adapters. Separate domain logic from external concerns.
-2. **API Design:** All REST endpoints must return responses featuring HATEOAS links.
-3. **Idempotency:** Unsafe `POST` requests must require and validate an `Idempotency-Key` header. `PUT` and `DELETE` are idempotent by definition and need no key.
-4. **Error Handling:** All error responses must comply with the RFC 9457 (Problem Details for HTTP APIs, which obsoletes RFC 7807) specification.
-5. **Database Migrations:** Use Flyway. All schema changes must follow the "Expand and Contract" pattern for zero-downtime deployments.
-6. **Versioning:** Do not store the version on branches or manually bump it. The application version must be derived from git history at build time (e.g., computing the minor version from the number of commits/merges on `main`) and injected into the build process.
-7. **Git Hooks for Formatting:** Source code formatting with tools like lint, ktfmt, and google-java-format should always be automated via a Git commit hook.
-8. **Pull Requests:** Always use squash-merge when merging Pull Requests into `main`. **Why:** So the work from a PR is recorded as one commit when merging to main, meaning the version will be bumped exactly once for each PR.
+Follow the engineering constitution, vendored at `docs/constitution/`:
 
-## Available AI Skills
-This project has custom VSSW skills installed. Whenever asked to scaffold or modify code, please utilize the following skills if applicable:
-- `vssw-scaffold-idempotent-api`
-- `vssw-generate-db-migration`
+- `principles/README.md` — universal, apply always
+- `patterns/README.md` — conditional, check "when not to use this"
+- `technologies/README.md` — the default stack
+- `documentation/README.md` — what to document, and where
+
+Read the four index files at the start of a task. Open individual files when a
+decision turns on them. Say so before deviating. Never edit the vendored copy —
+change it upstream and pull.
+
+The stack, architecture, API conventions, persistence, testing and operations
+are all defined there. **Do not restate them here.** This file carries only what
+is specific to *this* service.
+
+## This service
+
+- **What it does:** <one paragraph>
+- **Domain:** <the aggregates and the invariants they protect>
+- **Deliberate deviations:** <none yet — record each, with an ADR under docs/adr/>
+
+## Commands
+
+```bash
+./gradlew build          # <verify before committing this file>
+./gradlew spotlessApply  # format
+./gradlew test           # unit
+```
+
+## Gotchas
+
+- <the slow suite, the service that must be running, the generated files>
+
+## Skills
+
+Use the installed VSSW skills where they apply: `vssw-scaffold-idempotent-api`,
+`vssw-scaffold-hateoas-feature-flag`, `vssw-generate-db-migration`,
+`vssw-setup-git-hooks`, `vssw-audit-project-compliance`.

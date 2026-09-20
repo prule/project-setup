@@ -71,6 +71,9 @@ nav:
     - Technologies — the default stack:
       - Overview: constitution/technologies/README.md
       - Deployment — Cloudflare: constitution/technologies/cloudflare.md
+      - Accessibility: constitution/technologies/accessibility.md
+      - Frontend Resilience: constitution/technologies/frontend-resilience.md
+      - Time, Money & Localization: constitution/technologies/localization.md
       - Code Formatting: constitution/technologies/formatting.md
       - Local-First: constitution/technologies/local-first.md
       - Packaging Beyond the Browser: constitution/technologies/packaging.md
@@ -102,10 +105,6 @@ nav:
     - Data Privacy: Privacy.md
     - Disaster Recovery: DisasterRecovery.md
     - Third-Party Integrations: Integrations.md
-  - Frontend Practices:
-    - Frontend Resilience: FrontendResilience.md
-    - Accessibility (a11y): Accessibility.md
-    - Timezones & Localization: Localization.md
   - Decisions:
     - 0001 Playbook defers to the constitution: adr/0001-playbook-defers-to-the-engineering-constitution.md
   - Getting Started:
