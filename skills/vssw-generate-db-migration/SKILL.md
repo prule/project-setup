@@ -7,7 +7,7 @@ description: >
 
 # Generate DB Migration Skill
 
-When asked to generate a database migration, you must strictly follow these rules from the engineering playbook.
+When asked to generate a database migration, you must strictly follow these rules. See also `docs/constitution/technologies/spring-boot-kotlin.md`.
 
 ## 1. Naming Conventions
 - Table names must be `snake_case` and plural (e.g., `user_accounts`, `orders`).
@@ -29,5 +29,8 @@ Every new table must include:
 - `created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()`
 - `updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()`
 
-## 4. Output
+## 4. Migrations are immutable
+**Never edit a migration that has been merged or applied** — Flyway checksums it, and an edit breaks every environment that already ran it. A mistake in an applied migration is corrected by a new migration, never by changing the old one. Migrations are forward-only: no `undo` scripts.
+
+## 5. Output
 Output the raw SQL script using a standard Flyway naming convention (e.g., `V<timestamp>__add_user_accounts.sql`).

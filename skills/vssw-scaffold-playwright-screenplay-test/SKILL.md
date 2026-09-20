@@ -1,53 +1,96 @@
 ---
 name: vssw-scaffold-playwright-screenplay-test
 description: >
-  Scaffolds a new end-to-end (E2E) test using Playwright and the Serenity / Screenplay pattern.
-  Use this skill whenever asked to write an E2E test, UI test, or Playwright test for a frontend application.
+  Scaffolds an end-to-end (E2E) test using Playwright and the Serenity/JS
+  Screenplay pattern. Use this skill whenever asked to write an E2E test,
+  UI test, acceptance test, or Playwright test for a frontend application.
 ---
 
 # Scaffold Playwright Screenplay Test Skill
 
-When asked to write E2E tests for a frontend application, you must strictly follow the **Serenity / Screenplay** pattern using Playwright. 
+E2E tests use **Serenity/JS** (`@serenity-js/*`) for the Screenplay pattern. Not `@testla/screenplay`, not raw Playwright page objects.
 
-## 1. Why the Screenplay Pattern?
-- **Why:** The Screenplay pattern decouples the *intent* of the test (e.g., "The user logs in") from the *implementation* of the UI interactions (e.g., "Fill the username field, click the login button"). This makes tests incredibly maintainable and resilient to UI changes. 
+Full reasoning: `docs/constitution/patterns/screenplay.md`.
 
-## 2. Directory Structure
-Ensure the E2E testing directory (e.g., `tests/e2e/`) is organized into the core Screenplay components:
-- `tasks/`: High-level business actions (e.g., `Login.ts`, `NavigateTo.ts`).
-- `questions/`: Queries about the state of the system (e.g., `Visibility.ts`, `Text.ts`).
-- `abilities/`: Interfaces to the system (e.g., `BrowseTheWeb.ts` wrapping the Playwright page object).
-- `specs/`: The actual test files describing the scenarios.
+## 1. Why Screenplay over Page Objects
+Screenplay decouples the *intent* of the test ("the user bookmarks an entry") from the *mechanics* ("click `#bm-btn`"). Page objects grow into large classes mixing locators, navigation and business logic, and are organised around pages, so a journey crossing five pages gets stitched together in the test. Screenplay composes tasks instead, so a UI change touches one interaction rather than every test that walked through it.
 
-## 3. Scaffolding a Test
-When writing a test file (e.g., `specs/login.spec.ts`), enforce this structure:
+## 2. Packages
+```
+@serenity-js/core  @serenity-js/playwright  @serenity-js/playwright-test
+@serenity-js/web   @serenity-js/assertions  @serenity-js/console-reporter
+```
+
+## 3. Shared harness
+Create `e2e/screenplay/serenity.ts` once. Every spec imports `describe`/`it` from here, never from `@playwright/test`:
 
 ```typescript
-import { test, expect } from '@playwright/test';
-import { Actor } from '@testla/screenplay';
-import { BrowseTheWeb } from '../abilities/BrowseTheWeb';
-import { NavigateTo } from '../tasks/NavigateTo';
-import { Login } from '../tasks/Login';
+import { Cast, TakeNotes } from '@serenity-js/core';
+import { BrowseTheWebWithPlaywright } from '@serenity-js/playwright';
+import { describe, it, test as base } from '@serenity-js/playwright-test';
 
-test.describe('Authentication', () => {
-  test('User can log in successfully', async ({ page }) => {
-    // 1. Setup the Actor with Abilities
-    const alice = Actor.named('Alice')
-      .with('Browse the Web', BrowseTheWeb.using(page));
+const test = base.extend({});
 
-    // 2. Perform Tasks
-    await alice.attemptsTo(
-      NavigateTo.theLoginPage(),
-      Login.withCredentials('alice@example.com', 'password123')
+test.use({
+  actors: async ({ browser, contextOptions }, use) => {
+    await use(
+      Cast.where((actor) =>
+        actor.whoCan(
+          BrowseTheWebWithPlaywright.using(browser, contextOptions),
+          TakeNotes.usingAnEmptyNotepad(),
+        ),
+      ),
     );
+  },
+});
 
-    // 3. Ask Questions (Assertions)
-    // Example: await alice.asks(Visibility.of('#dashboard'));
+export { describe, it, test };
+export { expect } from '@serenity-js/playwright-test';
+```
+
+Register the reporter in `playwright.config.ts`:
+```typescript
+reporter: [['@serenity-js/playwright-test', { crew: ['@serenity-js/console-reporter'] }]],
+```
+
+## 4. Directory structure
+```
+e2e/
+  screenplay/
+    serenity.ts      the shared harness above
+    <domain>.ts      custom tasks and questions, named for the domain
+  *.spec.ts          the scenarios
+```
+
+## 5. Writing a spec
+```typescript
+import { Ensure, isPresent } from '@serenity-js/assertions';
+import { By, Click, Navigate, PageElement } from '@serenity-js/web';
+import { describe, it } from './screenplay/serenity';
+
+const bookmarkButton = PageElement.located(By.css('[data-test="bookmark"]'))
+  .describedAs('the bookmark button');
+
+describe('Bookmarks', () => {
+  it('lets a reader bookmark an entry', async ({ actor }) => {
+    await actor.attemptsTo(
+      Navigate.to('/'),
+      Click.on(bookmarkButton),
+      Ensure.that(bookmarkButton, isPresent()),
+    );
   });
 });
 ```
 
-## 4. Implementation Rules
-- Never use direct Playwright page calls (e.g., `page.click()`) inside the `.spec.ts` files.
-- All page interactions must be encapsulated inside `Task` classes.
-- All assertions must be encapsulated inside `Question` classes.
+## Rules
+- The spec body contains **tasks and questions only**. No `page.` calls, no raw locators inline, no waits.
+- Only abilities and interactions touch Playwright. Nothing else imports `Page`.
+- Name tasks for the user's goal in the domain's language (`PlaceAnOrder`), never for mechanics (`ClickCheckoutButton`).
+- Tasks return nothing; reading state is a Question's job.
+- Use `.describedAs(...)` on every `PageElement` — it is what makes the report readable.
+- Prefer role- and label-based locators over CSS paths.
+- Never `waitForTimeout`. Serenity/JS and Playwright wait for you.
+- Keep E2E to a few critical journeys. Screenplay makes tests cheap to write, which is not a licence to push logic coverage up the pyramid.
+
+## Smells
+`@testla/screenplay` or `@playwright/test` imported in a spec, `page.click(...)` in a test, a `LoginPage` class with twenty methods, tasks named after buttons, `waitForTimeout`, a `PageElement` with no description.

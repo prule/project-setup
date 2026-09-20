@@ -1,39 +1,61 @@
 ---
 name: vssw-audit-project-compliance
 description: >
-  Audits the current project to ensure it complies with the Playbook's strict standards.
-  Use this skill whenever asked to "audit the project", "check compliance", or "find what's missing".
+  Audits the current project against the engineering constitution and Playbook
+  standards. Use this skill whenever asked to "audit the project",
+  "check compliance", "find what's missing", or to check a project follows
+  the standards or constitution.
 ---
 
 # Audit Project Compliance Skill
 
-When the user asks you to audit the project, perform the following 3 phases. Do not prompt the user for input until Phase 3 is complete.
+Run all three phases before prompting the user for anything.
 
-## Phase 1: Project Type Detection
-Use terminal tools to determine the project stack:
-- **Frontend Project:** Has a `package.json` (specifically React/Vite).
-- **Backend Project:** Has Kotlin/Gradle files.
-- **Monorepo:** Has both frontend and backend modules.
+## Phase 1: Detect the project
 
-## Phase 2: The Compliance Scan
-Scan the codebase against these strict criteria.
+- **Frontend** — `package.json` with React/Vite.
+- **Backend** — Kotlin/Gradle files.
+- **Monorepo** — both.
 
-### Global Checks (All Projects)
-1.  **Run Script:** Does a `./run` shell script exist at the root with `setup`, `serve`, and `build` commands?
-2.  **Git Hooks:** Does `.githooks/pre-commit` exist? Does `./run setup` run `git config core.hooksPath .githooks`?
-3.  **CI/CD:** Does a `.github/workflows` directory exist with a deployment/CI pipeline?
+Then read `docs/constitution/README.md` if it is vendored, and the project's `CLAUDE.md`. A project may record a **deliberate deviation** — in `CLAUDE.md`, `openspec/config.yaml`, or an ADR under `docs/adr/`. A recorded deviation is **compliant**: report it as ⚠️ *recorded*, not ❌. Only unrecorded departures are failures.
 
-### Frontend Checks (If Frontend)
-1.  **Package Manager:** Is `pnpm-lock.yaml` present? (Fail if `package-lock.json` or `yarn.lock` exists).
-2.  **PWA:** Is the app configured as a Progressive Web App (PWA)? (Look for Vite PWA plugin or `manifest.json`).
-3.  **E2E Tests:** Are Playwright tests configured?
-4.  **Testing Pattern:** Do the E2E tests use the Serenity / Screenplay pattern for UI interaction?
+## Phase 2: Scan
 
-### Backend Checks (If Backend)
-1.  **Architecture:** Does the directory structure follow Hexagonal Architecture (ports and adapters)?
-2.  **Testing:** Are standard unit and integration tests present?
+### Constitution
+1. Is `docs/constitution/` vendored (git subtree), and does `CLAUDE.md` point at its four index READMEs?
+2. Does `CLAUDE.md` state that the vendored copy must never be edited locally?
+3. Is `docs/constitution/` **unmodified** vs upstream? (`git log --oneline -- docs/constitution` should show only subtree commits.)
+4. Is it excluded from the formatter and the linter?
 
-## Phase 3: The Report Artifact
-Output your findings as a Markdown Artifact (`project_audit_report.md`):
-- Present a clear ✅ / ❌ checklist of the criteria above.
-- For every ❌, provide an actionable AI prompt the user can run to fix it. (e.g., *"Ask me to run the `vssw-setup-git-hooks` skill to resolve issue #2."*)
+### Global
+5. **Git hooks** — does `.githooks/pre-commit` exist, is it executable, and is `core.hooksPath` registered (in `./run setup`, or documented as a per-clone step)?
+6. Does the hook format **only staged files**, and avoid `git add .`?
+7. **CI** — does `.github/workflows` run format, lint, typecheck and tests? *(The hook is convenience; CI is enforcement — `--no-verify` exists.)*
+8. **Specs** — does `openspec/` exist, and does `config.yaml` have a `context` block that points at the constitution rather than restating the stack? Any `<placeholders>` left unfilled?
+9. **Decisions** — does `docs/adr/` exist for anything costly to reverse?
+
+### Frontend
+10. **pnpm** — `pnpm-lock.yaml` present, and no `package-lock.json` or `yarn.lock`.
+11. **Versions pinned** — `.node-version` **and** `packageManager` in `package.json`. Both, exactly.
+12. **Formatter and linter** — Prettier and ESLint configured, with `eslint-config-prettier` last.
+13. **TypeScript** — `strict: true`; grep for `any`, `@ts-ignore`, `as unknown as`.
+14. **PWA** — manifest, maskable icon, service worker, offline fallback.
+15. **E2E** — Playwright using **Serenity/JS** Screenplay; no `page.` calls in specs.
+
+### Backend
+16. **Ports and adapters** — does `domain`/`application` import from `adapters`, `config`, or Spring? Is there an **ArchUnit test** enforcing it?
+17. **Contract first** — is `openapi.yaml` the source, with generated server interfaces? (A spec generated *from* annotations is a ❌.)
+18. **Persistence** — Spring Data JDBC, Flyway forward-only, **no edited migrations**.
+19. **Tests** — Testcontainers against real Postgres, **not H2**. Slices (`@DataJdbcTest`, `@WebMvcTest`) rather than `@SpringBootTest` everywhere.
+20. **API** — RFC 9457 Problem Details, HATEOAS `_links`, pagination on every collection, idempotency keys on unsafe POSTs.
+21. **Operations** — Actuator readiness/liveness, timeouts on every outbound call, secrets from the environment and not in `application.yml`.
+
+## Phase 3: Report
+
+Write `project_audit_report.md`:
+
+- ✅ / ⚠️ *recorded deviation* / ❌ per criterion, grouped by the sections above.
+- **Order the ❌s by consequence, not by list position.** An unrecorded security or data-loss gap (secrets committed, no RLS, an edited migration, a retried payment that double-charges) outranks a missing config file.
+- For each ❌, give the exact command or skill that fixes it — e.g. *"run the `vssw-setup-git-hooks` skill"*, *"run `pnpm add -D prettier`"*.
+- For each ⚠️, name where the deviation is recorded so the user can confirm it still holds.
+- State what you could **not** check and why. A criterion you skipped is not a pass.
