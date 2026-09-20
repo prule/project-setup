@@ -37,6 +37,9 @@ Where does it run?
 | Running a service | Actuator, Micrometer/OTel, timeouts, OAuth2 | [spring-boot-operations.md](spring-boot-operations.md) |
 | Hosting | Cloudflare Pages + Workers | [cloudflare.md](cloudflare.md) |
 | API contracts | **Contract first** — OpenAPI written before code, types generated | [type-contracts.md](type-contracts.md) |
+| Accessibility | WCAG 2.1 AA, native elements, keyboard paths | [accessibility.md](accessibility.md) |
+| Resilience | Error boundaries, retry GET only, four states | [frontend-resilience.md](frontend-resilience.md) |
+| Time, money, language | UTC stored, money as integers, extracted strings | [localization.md](localization.md) |
 | Formatting | Prettier · ktfmt · google-java-format, on commit | [formatting.md](formatting.md) |
 | Repo layout | pnpm workspace monorepo | [repo-structure.md](repo-structure.md) |
 | Native shells | PWA first; Capacitor or Tauri only on demand | [packaging.md](packaging.md) |
@@ -53,6 +56,7 @@ Where does it run?
 ## Standing rules
 
 - **TypeScript, not JavaScript.** Everywhere, no exceptions in source.
+- **Accessibility is part of the work**, not a later pass. Native elements, keyboard paths, visible focus.
 - **Formatting is automated**, applied by a pre-commit hook and enforced in CI. Never hand-format, never debate style.
 - **Pin every version.** Node in `.node-version`, pnpm in `packageManager`, dependencies exact. Reproducible builds are not optional.
 - **Contract first for REST.** The OpenAPI spec is written and reviewed before the implementation; server interfaces and clients are generated from it, never the other way round.
