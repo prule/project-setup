@@ -24,7 +24,6 @@ For deep-dives into specific topics and conventions, please refer to our dedicat
 - [Observability & Incident Response](./Observability.md)
 - [Third-Party Integrations (Build vs. Buy)](./Integrations.md)
 - [Disaster Recovery & Backups](./DisasterRecovery.md)
-- [Dev Containers](./DevContainers.md)
 - [Developer Onboarding (Day One)](./Onboarding.md)
 
 ---
@@ -74,8 +73,7 @@ If the project requires a REST API, adhere to these standards:
 - **Language:** Kotlin.
 - **Architecture:** Hexagonal / Clean Architecture.
 - **Framework & Database:**
-    - **Spring Boot with JPA** backed by **PostgreSQL** (Default choice for standard and enterprise apps).
-    - **Ktor with Exposed** backed by **PostgreSQL** (Alternative for lightweight, high-performance microservices).
+    - **Spring Boot with Spring Data JDBC** backed by **PostgreSQL** (the default for anything with a real domain).
     - **Supabase** (Alternative Backend-as-a-Service option providing PostgreSQL, auth, and real-time APIs).
 - **API Design & Requirements:**
     - Standardized with **OpenAPI**.
@@ -158,14 +156,6 @@ Avoid heavy backend setups just for form collection. Instead, leverage Google Sh
 ---
 
 ## 10. Developer Experience (DX)
-
-### Dev Containers
-Every repository must ship a [Dev Container](./DevContainers.md) so the environment is identical in **VS Code**, **IntelliJ IDEA**, and **WebStorm**, with no host setup beyond Docker and an editor.
-
-- **Purpose:** The container matches CI and the deploy target exactly, so "works on my machine" stops being a category of bug. Day-one onboarding becomes "open the repo, click Reopen in Container".
-- **Standard toolchain:** Node via **fnm** (never corepack), **pnpm** installed standalone and pinned to `packageManager`, the **OpenSpec CLI** (`@fission-ai/openspec`), **Claude Code** and the **GitHub CLI** as Features, plus the JDK and the checked-in `./gradlew` wrapper for Kotlin projects.
-- **Shared caches:** A single `devcontainer-cache` volume mounted at `/cache` is shared by *every* project on the machine, holding the pnpm store and the Gradle cache. Dependencies download once per machine rather than once per project. Per-project artifacts (`node_modules`, Playwright browsers) stay in isolated volumes.
-- **Scaffolding:** Use the `vssw-scaffold-devcontainer` AI skill to create or align a project's `.devcontainer/` — it carries the templates, the pinning rules, and the verification checklist.
 
 ### The `run` Script
 Every repository must contain a `run` shell script in its root directory.

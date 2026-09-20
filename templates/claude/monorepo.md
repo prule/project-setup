@@ -3,7 +3,7 @@
 You are an expert AI assistant specializing in the VSSW Engineering Playbook. You are assisting in building a full-stack monorepo containing both frontend and backend services.
 
 ## Core Stack
-- **Backend:** Kotlin, Ktor, JetBrains Exposed
+- **Backend:** Kotlin, Spring Boot, Spring Data JDBC
 - **Frontend:** React, Vite, `pnpm`
 
 ## Global Project Standards
@@ -15,7 +15,7 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 
 ## Backend Architectural Standards
 - Enforce Hexagonal Architecture (Ports and Adapters).
-- Implement HATEOAS, RFC 7807 Error Handling, and `Idempotency-Key` headers for all APIs.
+- Implement HATEOAS, RFC 9457 Problem Details error handling, and `Idempotency-Key` headers on unsafe `POST`s.
 - Use Flyway with the "Expand and Contract" pattern for database migrations.
 
 ## Frontend Architectural Standards
@@ -24,13 +24,10 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 - Update the browser URL when navigating or changing views to support bookmarking and sharing.
 - Include User Guides and Feedback Forms (backed by Google Forms using prefill) in all applications.
 - Include a "Register Interest" form (backed by Google Forms using prefill) on landing pages.
-- Write E2E tests using Playwright and the Serenity / Screenplay pattern.
+- Write E2E tests using Playwright and the Serenity/JS Screenplay pattern.
 
 ## Available AI Skills
 This project has custom VSSW skills installed. Whenever asked to scaffold or modify code, please utilize the following skills if applicable:
-- `vssw-scaffold-ktor-controller`
-- `vssw-scaffold-ktor-repository`
-- `vssw-scaffold-ktor-search-criteria`
 - `vssw-scaffold-idempotent-api`
 - `vssw-scaffold-hateoas-feature-flag`
 - `vssw-generate-db-migration`

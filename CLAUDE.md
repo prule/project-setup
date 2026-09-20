@@ -44,7 +44,7 @@ Check the rendered HTML rather than the source when a list looks wrong — the g
 
 ## Adding or editing a skill
 
-Skills live in `skills/vssw-<kebab-name>/SKILL.md`. **The directory name, the frontmatter `name:`, and every reference in docs/templates must all be the same kebab-case string** (e.g. `vssw-scaffold-ktor-controller`).
+Skills live in `skills/vssw-<kebab-name>/SKILL.md`. **The directory name, the frontmatter `name:`, and every reference in docs/templates must all be the same kebab-case string** (e.g. `vssw-scaffold-idempotent-api`).
 
 Claude Code derives the invocable name from the *directory* and ignores `name:` when they disagree — so a mismatch fails silently rather than erroring. Skill names must be kebab-case; a colon (the old `vssw:foo` style) is not a valid name character.
 
@@ -58,7 +58,7 @@ The `AGENTS.md` write is idempotent and non-destructive, guarded by an HTML-comm
 
 Frontmatter is `name` + `description` only. The `description` is a trigger phrase — write it as "Use this skill whenever the user asks to …", because it is the only thing an agent sees when deciding whether to load the skill. The body is imperative instructions to the AI, not documentation for humans.
 
-Skills may ship a sibling `templates/` directory of literal files to copy out (see `skills/vssw-scaffold-devcontainer/templates/`); `bin/cli.js` copies the whole `skills/` tree recursively, so those come along automatically.
+Skills may ship a sibling `templates/` directory of literal files to copy out; `bin/cli.js` copies the whole `skills/` tree recursively, so those come along automatically.
 
 A new skill must also be added to the numbered list in `docs/AISkills.md`, and to the relevant `templates/claude/*.md` "Available AI Skills" section if it applies to that stack.
 

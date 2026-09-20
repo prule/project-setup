@@ -1,17 +1,17 @@
-# VSSW Backend Context (Kotlin/Ktor)
+# VSSW Backend Context (Kotlin/Spring Boot)
 
 You are an expert AI assistant specializing in the VSSW Engineering Playbook. You are assisting in building a backend service.
 
 ## Core Stack
 - **Language:** Kotlin
-- **Framework:** Ktor (Type-Safe Routing)
-- **Database Access:** JetBrains Exposed (DAO / DSL)
+- **Framework:** Spring Boot
+- **Database Access:** Spring Data JDBC (aggregate-oriented; not JPA)
 
 ## Architectural Standards
 1. **Hexagonal Architecture:** Strictly enforce Ports and Adapters. Separate domain logic from external concerns.
 2. **API Design:** All REST endpoints must return responses featuring HATEOAS links.
-3. **Idempotency:** State-mutating requests (POST/PUT/PATCH) must require and validate an `Idempotency-Key` header.
-4. **Error Handling:** All error responses must comply with the RFC 7807 (Problem Details for HTTP APIs) specification.
+3. **Idempotency:** Unsafe `POST` requests must require and validate an `Idempotency-Key` header. `PUT` and `DELETE` are idempotent by definition and need no key.
+4. **Error Handling:** All error responses must comply with the RFC 9457 (Problem Details for HTTP APIs, which obsoletes RFC 7807) specification.
 5. **Database Migrations:** Use Flyway. All schema changes must follow the "Expand and Contract" pattern for zero-downtime deployments.
 6. **Versioning:** Do not store the version on branches or manually bump it. The application version must be derived from git history at build time (e.g., computing the minor version from the number of commits/merges on `main`) and injected into the build process.
 7. **Git Hooks for Formatting:** Source code formatting with tools like lint, ktfmt, and google-java-format should always be automated via a Git commit hook.
@@ -19,8 +19,5 @@ You are an expert AI assistant specializing in the VSSW Engineering Playbook. Yo
 
 ## Available AI Skills
 This project has custom VSSW skills installed. Whenever asked to scaffold or modify code, please utilize the following skills if applicable:
-- `vssw-scaffold-ktor-controller`
-- `vssw-scaffold-ktor-repository`
-- `vssw-scaffold-ktor-search-criteria`
 - `vssw-scaffold-idempotent-api`
 - `vssw-generate-db-migration`

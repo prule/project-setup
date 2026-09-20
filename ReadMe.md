@@ -52,7 +52,7 @@ To use these playbook skills with Anthropic's web-based Claude:
 
 ### 📝 Claude Project Templates (Context Files)
 To give Claude the perfect foundational knowledge when spinning up a new project, we have created standardized context files. You can find these inside the `templates/claude/` directory of this repository:
-- `backend.md` (Kotlin/Ktor REST APIs)
+- `backend.md` (Kotlin/Spring Boot REST APIs)
 - `frontend.md` (React/Vite with Local-First IndexedDB/Dexie)
 - `monorepo.md` (Full-Stack with CI/CD & hooks)
 
