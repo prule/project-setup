@@ -28,9 +28,11 @@ is specific to *this* service.
 ## Commands
 
 ```bash
-./gradlew build          # <verify before committing this file>
-./gradlew spotlessApply  # format
-./gradlew test           # unit
+./gradlew build                   # <verify before committing this file>
+./gradlew spotlessApply           # format
+./gradlew detekt                  # lint
+./gradlew test jacocoTestReport   # tests, with the coverage report sonar-check reads
+sonar-check                       # last: the SonarQube quality gate (quality-gates.md)
 ```
 
 ## Gotchas

@@ -28,11 +28,12 @@ only what is specific to *this* application.
 ## Commands
 
 ```bash
-pnpm dev          # <verify every command before committing this file>
-pnpm test         # unit
-pnpm test:e2e     # Playwright, Serenity/JS Screenplay
-pnpm lint
+pnpm dev            # <verify every command before committing this file>
+pnpm test:coverage  # unit, with the lcov report sonar-check reads
+pnpm test:e2e       # Playwright, Serenity/JS Screenplay
+pnpm lint           # oxlint
 pnpm format
+sonar-check         # last: the SonarQube quality gate (quality-gates.md)
 ```
 
 ## Gotchas

@@ -1,6 +1,6 @@
 # Software Development Preferences & Guidelines
 
-This document serves as the core entrypoint for our engineering playbook. It covers high-level architecture choices, tooling, and deployment strategies.
+This is the entry point to the engineering playbook. **How code is built** — the stack, architecture, testing, formatting and quality gates — is defined once, in the [engineering constitution](./constitution/README.md) ([ADR 0001](./adr/0001-playbook-defers-to-the-engineering-constitution.md)). This page covers what the Playbook owns: how work is released, deployed and run.
 
 ### 📚 Engineering Playbook Index
 For deep-dives into specific topics and conventions, please refer to our dedicated guides:
@@ -12,6 +12,7 @@ For deep-dives into specific topics and conventions, please refer to our dedicat
 - [Feature Flags & Dark Launching](./FeatureFlags.md)
 - [The Way of Working (Process & DoD)](./WayOfWorking.md)
 - [Testing Strategy](./constitution/patterns/testing-strategy.md)
+- [Quality Gates](./constitution/technologies/quality-gates.md)
 - [API Design & Idempotency](./constitution/technologies/spring-boot-api.md)
 - [Security Practices](./constitution/principles/least-privilege.md)
 - [Data Privacy & Compliance](./Privacy.md)
@@ -28,109 +29,45 @@ For deep-dives into specific topics and conventions, please refer to our dedicat
 
 ---
 
-## 1. Architectural Paradigms
+## 1. Choosing the Stack
 
-When starting a new project, evaluate if it needs a full backend or if a local-first approach is sufficient.
-
-### Local-First PWA (Default for standalone apps)
-- **Concept:** App runs entirely in the browser, storing data locally. No custom backend required.
-- **Storage:** Local storage using **IndexedDB**, managed via the **Dexie.js** wrapper.
-- **Use Case:** Single-user tools, calculators, offline-first utilities, or apps where data privacy means data shouldn't leave the device.
-
-### REST API Backend (For distributed/multiplayer apps)
-- **Concept:** Client-server architecture where the frontend communicates with a remote backend.
-- **Use Case:** Multi-user platforms, centralized data processing, or when integrating with external webhooks/services.
+The constitution's [technologies decision tree](./constitution/technologies/README.md) picks the stack. In short: a **React PWA**, [local-first](./constitution/technologies/local-first.md) when it should work offline; **Supabase** as the default backend; **Kotlin + Spring Boot** only for a real domain model, batch work or heavy integration. Versions are pinned per project (`.node-version`, `packageManager`), not here.
 
 ---
 
-## 2. Frontend Stack & Setup
+## 2. Code Quality
 
-All frontend projects should utilize the following core stack:
+Every change passes the [quality gates](./constitution/technologies/quality-gates.md): format, lint, types, tests with coverage, SonarQube via `sonar-check`, and Renovate for dependencies.
 
-- **Framework:** React + TypeScript.
-- **Build Tool:** Vite.
-- **Package Manager:** PNPM (Node 24 required). PNPM ensures efficient and fast `node_modules` storage.
-- **PWA Integration:** Use `vite-plugin-pwa` with `generateSW` to configure the service worker. Implement the prompt-for-update behavior when code is updated.
-- **State Management & Fetching:** 
-    - **TanStack Query (React Query)** for async state and data fetching.
-    - **Zustand** or **React Context** for purely local UI state.
-- **Styling:** Tailwind CSS.
-- **Component Architecture:** Focus on clean code and highly reusable components. Always use the latest stable package versions.
-
-### Frontend Testing
-
-- **Unit/Integration Tests:** Vitest.
-- **E2E Tests:** Playwright combined with **Serenity BDD**.
-    - Must use the **Screenplay Pattern**.
-    - Enable Serenity Reports for clear, business-readable test documentation.
+Code is formatted on commit — by **Husky** and **lint-staged** in a repo with a `package.json`, or by a native Git hook (`core.hooksPath`) in a JVM-only repo — set up with the `vssw-setup-git-hooks` skill, and checked again in CI. The formatters are in [Code Formatting](./constitution/technologies/formatting.md).
 
 ---
 
-## 3. Backend Stack (If Required)
+## 3. Releasing Schema Changes (Expand and Contract)
 
-If the project requires a REST API, adhere to these standards:
+Several versions of the app can run at once during a deployment, so **every migration must work with both the old and the new code**. The migration tool and its rules — Supabase CLI with Row Level Security, or Flyway for Spring — are in [Supabase](./constitution/technologies/supabase.md), [Spring Boot & Kotlin](./constitution/technologies/spring-boot-kotlin.md) and the `vssw-generate-db-migration` skill.
 
-- **Language:** Kotlin.
-- **Architecture:** Hexagonal / Clean Architecture.
-- **Framework & Database:**
-    - **Spring Boot with Spring Data JDBC** backed by **PostgreSQL** (the default for anything with a real domain).
-    - **Supabase** (Alternative Backend-as-a-Service option providing PostgreSQL, auth, and real-time APIs).
-- **API Design & Requirements:**
-    - Standardized with **OpenAPI**.
-    - Implement **HATEOAS** links in resource responses, dynamically adjusting based on resource state and user permissions.
-    - **Version Endpoint:** Backends must expose an endpoint returning the application version (e.g., via Spring Boot Actuator).
+A breaking change (renaming or dropping a column) spreads across deployments:
+
+1. **Expand (Deployment 1):** Add the new column. The code writes to *both* columns and still reads the old one.
+2. **Migrate (Deployment 2):** Backfill existing rows from the old column into the new one. The code now reads the *new* column.
+3. **Contract (Deployment 3):** Once nothing reads or writes the old column, drop it.
 
 ---
 
-## 4. Database Migrations & Data Modeling
+## 4. CI/CD & Versioning
 
-For projects requiring a PostgreSQL backend, database schemas and migrations are managed as follows:
-
-- **Migration Tool:** Flyway.
-- **Execution Strategy:** Migrations must be applied automatically on application startup (e.g., via Spring Boot's native Flyway integration) to ensure the database schema is always in sync with the application code.
-- **Data Modeling Conventions:**
-    - Use `snake_case` for all table and column names.
-    - Use plural names for tables (e.g., `users`, `orders`).
-    - Use explicit UUIDs as primary keys by default.
-    - All tables must include `created_at` and `updated_at` timestamp columns for auditing purposes.
-
-### Zero-Downtime Migrations (Expand and Contract Pattern)
-Because multiple instances of the backend may be running simultaneously during a deployment, **all database migrations must be backwards compatible**. A new version of the application might run alongside the old version for several minutes during a rolling update.
-
-If you need to make a breaking change (like renaming or dropping a column), you must use the **Expand and Contract** pattern spread across multiple deployments:
-
-1. **Expand (Deployment 1):** Add the new column. Update the application code to write to *both* the old and new columns, but continue reading from the old column.
-2. **Migrate (Deployment 2):** Run a migration to backfill existing data from the old column into the new column. Update the application code to read from the *new* column.
-3. **Contract (Deployment 3):** Once all running instances are using the new column and no code relies on the old one, you can safely drop the old column from the database.
+- **CI Provider:** GitHub Actions, running the quality gates on every pull request.
+- **Merging:** [squash and merge](./SquashAndMerge.md), so one pull request is one commit on `main`.
+- **Versioning:** the version is derived from git history at build time — `<major>.<commits on main>.0` — so each squash-merge bumps it by exactly one, and no version number is ever written on a branch. Only the major is maintained by hand.
+- **Unified Monorepo Versioning:** a frontend and backend in one repository share that one version.
+- The version is visible in the app UI (e.g. the footer or settings page) and returned by the backend's version endpoint.
 
 ---
 
-## 5. Git Hooks & Code Formatting
+## 5. Deployment & Analytics
 
-Code is formatted on commit — by **Husky** and **lint-staged** in a repo with a `package.json`, or by a native Git hook (`core.hooksPath`) in a JVM-only repo — set up with the `vssw-setup-git-hooks` skill, and checked again in CI.
-
-- **JavaScript/TypeScript:** oxlint & Prettier.
-- **Kotlin:** `ktfmt` (configured via Gradle plugin).
-- **Java:** `google-java-format` (configured via Gradle plugin).
-
-*Ensure the Git hook triggers the relevant Gradle formatting tasks before allowing a commit.*
-
----
-
-## 6. CI/CD & Versioning
-
-- **CI Provider:** GitHub Actions (GitHub CI).
-- **Dependency Management:** Use **Renovate** to automatically keep dependencies up to date.
-- **Versioning Strategy:**
-    - **Unified Monorepo Versioning:** If the frontend and backend reside in the same repository, they should share the exact same version number (Lockstep Versioning). A single global version is bumped for the entire repository regardless of which files changed.
-    - A custom GitHub Action should bump the **minor version** (e.g., triggering `npm version minor` and updating `gradle.properties` / `build.gradle.kts`) on every merge to the `main` branch.
-    - The unified version number must be visible within the app UI (e.g., footer or settings page) and returned by the backend version endpoint.
-
----
-
-## 7. Deployment & Analytics
-
-- **Hosting:** Deploy frontend applications to **Cloudflare Pages**.
+- **Hosting:** Deploy frontend applications to **Cloudflare Pages** ([Cloudflare](./constitution/technologies/cloudflare.md)).
 - **Analytics:** Cloudflare Web Analytics.
     - Use the "Auto" integration method from the Cloudflare Dashboard (Cloudflare Dashboard → Pages project → Metrics tab → enable Web Analytics). This requires zero code and no tokens.
     - **Privacy Advantage:** Cloudflare Web Analytics is privacy-first. It does not use client-side state (like cookies or `localStorage`) to track users across sites or collect personal data. Therefore, it **does not require a GDPR cookie banner** or tracking consent prompt, keeping the UI clean and legally compliant by default.
@@ -138,28 +75,19 @@ Code is formatted on commit — by **Husky** and **lint-staged** in a repo with 
 
 ---
 
-## 8. Forms, Feedback & Landing Pages
+## 6. Forms, Feedback & Landing Pages
 
-Avoid heavy backend setups just for form collection. Instead, leverage Google Sheets:
-
-- **Feedback Page:** Collect user comments by submitting data to a Google Sheet. Use the "prefilled Google Form" URL submission trick to handle the backend without the user ever seeing the actual Google Form interface.
-- **Landing Page:** Use the same Google Sheet/Form technique to build a "Register Interest" form for pre-launch products.
+Avoid heavy backend setups just for form collection. A **feedback** form or a **register interest** form on a landing page posts to a Google Form from the app's own UI, so answers land in a Google Sheet and the user never sees the Google Form. The `vssw-integrate-google-form` skill builds it, sending only the data the form needs. See [Third-Party Integrations](./Integrations.md) for when buying beats building.
 
 ---
 
-## 9. Observability & Logging
+## 7. Observability
 
-- **Logging:** Implement structured, contextual logging. Include unique trace IDs (e.g., using MDC in Kotlin/Java) to follow requests throughout their lifecycle.
-- **Monitoring:** Collect key application and performance metrics.
-- **Tracing:** Ensure observability tools are properly integrated to monitor errors, performance, and API traffic.
+Logging, tracing, metrics and health checks for a service are in [Spring Boot Operations](./constitution/technologies/spring-boot-operations.md).
 
 ---
 
-## 10. Developer Experience (DX)
+## 8. Developer Experience (DX)
 
-### The `run` Script
-Every repository must contain a `run` shell script in its root directory.
-
-- **Purpose:** Acts as executable documentation.
-- **Functionality:** Automates all relevant developer commands (e.g., `./run app:build`, `./run db:up`).
-- **Benefit:** Developers don't need to memorize complex CLI arguments, and the script inherently documents how to set up and work within the environment.
+### Project commands
+The project's `CLAUDE.md` lists the exact commands to set up, run, test and build it, and every one of them has been run. A repository may also wrap them in a `run` shell script at its root (`./run setup`, `./run serve`, `./run build`) as executable documentation; when it has one, use it rather than the tools it wraps (the `vssw-run-script` skill). It is optional: `pnpm` scripts or Gradle tasks listed in `CLAUDE.md` are enough.
