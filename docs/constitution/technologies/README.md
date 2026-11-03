@@ -41,6 +41,7 @@ Where does it run?
 | Resilience | Error boundaries, retry GET only, four states | [frontend-resilience.md](frontend-resilience.md) |
 | Time, money, language | UTC stored, money as integers, extracted strings | [localization.md](localization.md) |
 | Formatting | Prettier · ktfmt · google-java-format, on commit | [formatting.md](formatting.md) |
+| Quality gates | oxlint · detekt · coverage · SonarQube · Renovate | [quality-gates.md](quality-gates.md) |
 | Repo layout | pnpm workspace monorepo | [repo-structure.md](repo-structure.md) |
 | Native shells | PWA first; Capacitor or Tauri only on demand | [packaging.md](packaging.md) |
 
