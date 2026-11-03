@@ -107,7 +107,7 @@ If you need to make a breaking change (like renaming or dropping a column), you 
 
 ## 5. Git Hooks & Code Formatting
 
-Code is formatted on commit by a native Git hook (`core.hooksPath`, no Husky or lint-staged), set up with the `vssw-setup-git-hooks` skill, and checked again in CI.
+Code is formatted on commit — by **Husky** and **lint-staged** in a repo with a `package.json`, or by a native Git hook (`core.hooksPath`) in a JVM-only repo — set up with the `vssw-setup-git-hooks` skill, and checked again in CI.
 
 - **JavaScript/TypeScript:** oxlint & Prettier.
 - **Kotlin:** `ktfmt` (configured via Gradle plugin).

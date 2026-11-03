@@ -29,8 +29,8 @@ Then read `docs/constitution/README.md` if it is vendored, and the project's `CL
 4. Is it excluded from the formatter and the linter?
 
 ### Global
-5. **Git hooks** — does `.githooks/pre-commit` exist, is it executable, and is `core.hooksPath` registered (in `./run setup`, or documented as a per-clone step)?
-6. Does the hook format **only staged files**, and avoid `git add .`?
+5. **Git hooks** — with a `package.json`: Husky (`.husky/pre-commit` running lint-staged, a `"prepare": "husky"` script, both pinned). JVM-only: `.githooks/pre-commit`, executable, with `core.hooksPath` registered (a Gradle task, `./run setup`, or a documented per-clone step). A `package.json` that exists only to run Husky is a ❌.
+6. Does the hook format **only staged files** (lint-staged, or the staged list), and avoid `git add .`? In a monorepo, is the Gradle entry in lint-staged a function, so no file names reach Gradle?
 7. **CI** — does `.github/workflows` run format, lint, typecheck and tests? *(The hook is convenience; CI is enforcement — `--no-verify` exists.)*
 8. **Specs** — does `openspec/` exist, and does `config.yaml` have a `context` block that points at the constitution rather than restating the stack? Any `<placeholders>` left unfilled?
 9. **Decisions** — does `docs/adr/` exist for anything costly to reverse?
