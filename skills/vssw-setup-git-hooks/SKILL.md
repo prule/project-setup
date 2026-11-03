@@ -79,7 +79,7 @@ Pin formatter versions in the version catalog — an unpinned formatter reformat
 
 ## 6. Supporting Files
 - Commit an `.editorconfig` so editors agree before a formatter runs.
-- Use `eslint-config-prettier` so lint rules never fight the formatter.
+- Keep lint to correctness rules so it never fights the formatter: oxlint's `correctness` category has no style rules (an ESLint setup needs `eslint-config-prettier`).
 - Do the initial mass reformat as its own commit, and add its SHA to `.git-blame-ignore-revs` so `git blame` stays useful.
 - Exclude generated code and vendored files from formatting.
 

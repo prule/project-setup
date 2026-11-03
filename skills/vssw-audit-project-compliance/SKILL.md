@@ -37,7 +37,7 @@ Then read `docs/constitution/README.md` if it is vendored, and the project's `CL
 ### Frontend
 10. **pnpm** — `pnpm-lock.yaml` present, and no `package-lock.json` or `yarn.lock`.
 11. **Versions pinned** — `.node-version` **and** `packageManager` in `package.json`. Both, exactly.
-12. **Formatter and linter** — Prettier and ESLint configured, with `eslint-config-prettier` last.
+12. **Formatter and linter** — Prettier, and oxlint with its `correctness` rules and the React hooks rules as errors (`technologies/quality-gates.md`). ESLint only as a recorded deviation, and then with `eslint-config-prettier` last.
 13. **TypeScript** — `strict: true`; grep for `any`, `@ts-ignore`, `as unknown as`.
 14. **PWA** — manifest, maskable icon, service worker, offline fallback.
 15. **E2E** — Playwright using **Serenity/JS** Screenplay; no `page.` calls in specs.
@@ -49,6 +49,15 @@ Then read `docs/constitution/README.md` if it is vendored, and the project's `CL
 19. **Tests** — Testcontainers against real Postgres, **not H2**. Slices (`@DataJdbcTest`, `@WebMvcTest`) rather than `@SpringBootTest` everywhere.
 20. **API** — RFC 9457 Problem Details, HATEOAS `_links`, pagination on every collection, idempotency keys on unsafe POSTs.
 21. **Operations** — Actuator readiness/liveness, timeouts on every outbound call, secrets from the environment and not in `application.yml`.
+
+### Quality gates (`technologies/quality-gates.md`)
+Skip 23–24 for a repo with no application code (a blog, a docs site) only if that is recorded.
+
+22. **Lint in CI** — oxlint (frontend) or detekt (backend) runs in `.github/workflows` and in `CLAUDE.md`'s done-check. Run it: any warning left must be a planned change, not drift.
+23. **Coverage report** — a script writes lcov (`vitest run --coverage`) or JaCoCo XML, and `coverage/` (or the build dir) is git-ignored.
+24. **SonarQube** — a root `sonar-project.properties` names sources, tests and the coverage report path; `sonar-check` is the last item of `CLAUDE.md`'s done-check, after the coverage run; and the project has a baseline on the server (`curl -su "$(cat ~/.config/sonar/token):" "localhost:9000/api/projects/search?projects=<key>"` returns it). Server down or no token: say so under *not checked*.
+25. **Suppressions** — grep `NOSONAR`, `oxlint-disable`, `eslint-disable`, `@Suppress`: each needs a reason on the same line.
+26. **Renovate** — `renovate.json` extends `config:recommended` and pins GitHub Action digests; dependencies are exact, not ranges.
 
 ## Phase 3: Report
 

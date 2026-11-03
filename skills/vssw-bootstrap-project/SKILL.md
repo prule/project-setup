@@ -126,8 +126,8 @@ Scaffold per `docs/constitution/technologies/README.md` — its decision tree pi
 
 - `.node-version` pinned to an exact version (fnm reads it)
 - pnpm pinned via `packageManager` in `package.json` — never npm or yarn
-- Prettier and ESLint, with `eslint-config-prettier` last
-- Add `docs/constitution/` to `.prettierignore` and the ESLint `ignores` — **the vendored copy must never be reformatted or linted**
+- Prettier, and oxlint with its `correctness` rules and the React hooks rules as errors — see `docs/constitution/technologies/quality-gates.md` for the full set of gates (coverage, `sonar-check`, Renovate)
+- Add `docs/constitution/` to `.prettierignore` and oxlint's `ignorePatterns` — **the vendored copy must never be reformatted or linted**
 
 Then set up formatting on commit with the **vssw-setup-git-hooks** skill, and add a CI workflow running format, lint, typecheck and tests. The hook is convenience; CI is enforcement.
 

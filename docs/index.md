@@ -109,7 +109,7 @@ If you need to make a breaking change (like renaming or dropping a column), you 
 
 Code must be automatically formatted on commit using **Husky** and **lint-staged**.
 
-- **JavaScript/TypeScript:** ESLint & Prettier.
+- **JavaScript/TypeScript:** oxlint & Prettier.
 - **Kotlin:** `ktfmt` (configured via Gradle plugin).
 - **Java:** `google-java-format` (configured via Gradle plugin).
 
