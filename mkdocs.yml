@@ -75,6 +75,7 @@ nav:
       - Frontend Resilience: constitution/technologies/frontend-resilience.md
       - Time, Money & Localization: constitution/technologies/localization.md
       - Code Formatting: constitution/technologies/formatting.md
+      - Quality Gates: constitution/technologies/quality-gates.md
       - Local-First: constitution/technologies/local-first.md
       - Packaging Beyond the Browser: constitution/technologies/packaging.md
       - React PWA: constitution/technologies/react-pwa.md
