@@ -42,6 +42,6 @@ pnpm format
 ## Skills
 
 Use the installed VSSW skills where they apply:
-`vssw-scaffold-playwright-screenplay-test`, `vssw-integrate-google-form-feedback`,
-`vssw-integrate-google-form-register-interest`, `vssw-setup-git-hooks`,
+`vssw-scaffold-playwright-screenplay-test`, `vssw-integrate-google-form`,
+`vssw-setup-git-hooks`,
 `vssw-audit-project-compliance`.

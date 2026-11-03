@@ -125,7 +125,7 @@ None yet. Record each one here and in `openspec/config.yaml`, with an ADR under
 Scaffold per `docs/constitution/technologies/README.md` — its decision tree picks the stack. For anything Node or browser:
 
 - `.node-version` pinned to an exact version (fnm reads it)
-- pnpm pinned via `packageManager` in `package.json` — never npm or yarn
+- Node pinned exactly in `.node-version`, and pnpm via `packageManager` in `package.json` — never npm or yarn
 - Prettier, and oxlint with its `correctness` rules and the React hooks rules as errors — see `docs/constitution/technologies/quality-gates.md` for the full set of gates (coverage, `sonar-check`, Renovate)
 - Add `docs/constitution/` to `.prettierignore` and oxlint's `ignorePatterns` — **the vendored copy must never be reformatted or linted**
 

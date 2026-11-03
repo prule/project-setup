@@ -1,8 +1,10 @@
 ---
 name: vssw-setup-git-hooks
 description: >
-  Sets up automatic code formatting on commit using Git Hooks.
-  Use this skill whenever asked to add pre-commit hooks, formatting on commit, or linting hooks.
+  Sets up automatic code formatting on commit with a native Git hook
+  (core.hooksPath), never Husky or lint-staged. Use this skill whenever asked to
+  add pre-commit hooks, formatting on commit, or linting hooks, in preference to
+  any Husky-based setup skill.
 ---
 
 # Setup Git Hooks Skill
