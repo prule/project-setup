@@ -1,22 +1,40 @@
 ---
 name: vssw-scaffold-hateoas-feature-flag
 description: >
-  Implements a new feature flag using the HATEOAS pattern. Use this skill when the user asks to hide a new feature behind a toggle.
+  Puts a feature behind a flag the HATEOAS way in a Spring Boot REST API: the
+  backend evaluates the flag and adds a link, the React client renders on the
+  link's presence. Use when asked to hide a feature behind a toggle in a project
+  with a Spring Boot backend that returns _links.
 ---
 
 # Scaffold HATEOAS Feature Flag Skill
 
-We do not evaluate feature flags on the frontend. The backend is the sole source of truth.
+The rule: **feature flags are links** (`docs/constitution/technologies/spring-boot-api.md`). The backend is the only place a flag is evaluated; no flag logic ships to the browser.
 
-## 1. Backend Implementation
-- The backend evaluates the feature flag (e.g., `isNewCheckoutEnabled(userId)`).
-- If the flag is `true`, the backend injects a specific link into the `_links` object of the relevant REST resource.
-- Example: If the flag is on, add `"checkout_v2": { "href": "/checkout/v2" }`.
+## 1. Backend
+Evaluate the flag where the resource's links are built, alongside the permission checks — a flag is one more reason a link is present or absent.
 
-## 2. Frontend Implementation
-- The frontend React component must NOT evaluate flags.
-- Instead, the component simply checks if the link exists in the `_links` object.
-- If the link exists, it renders the button/UI element and uses the `href` provided by the backend to perform the action.
+```kotlin
+fun toModel(order: Order, user: User): EntityModel<OrderDto> =
+  EntityModel.of(order.toDto()).apply {
+    add(linkTo<OrderController> { get(order.id) }.withSelfRel())
+    if (flags.isEnabled("checkout-v2", user)) add(linkTo<CheckoutController> { start(order.id) }.withRel("checkout_v2"))
+  }
+```
 
-## 3. Output
-When using this skill, output both the backend link-injection code block and the frontend conditional-rendering React component.
+## 2. Frontend
+The component checks for the link and uses its `href`. It never reads a flag, a config value or an environment variable.
+
+```tsx
+{order._links.checkout_v2 && <Button onClick={() => post(order._links.checkout_v2.href)}>Check out</Button>}
+```
+
+## 3. Test both states
+One backend test per state: flag on → the link is present; flag off → it is absent. One component test: no link, no button.
+
+## When not to use this
+- **No Spring REST backend** (a Supabase or local-first app): there are no `_links` to carry the flag. Use the platform's own mechanism, recorded as a deviation.
+- **A flag that changes no action** (copy, layout): a link is the wrong carrier; return the setting in the resource instead.
+
+## Smells
+`if (flags.checkoutV2)` in a React component, a flag name in frontend code, a link built from a concatenated URL string, a flag with no test for its off state.

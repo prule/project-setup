@@ -68,7 +68,7 @@ import { Ensure, isPresent } from '@serenity-js/assertions';
 import { By, Click, Navigate, PageElement } from '@serenity-js/web';
 import { describe, it } from './screenplay/serenity';
 
-const bookmarkButton = PageElement.located(By.css('[data-test="bookmark"]'))
+const bookmarkButton = PageElement.located(By.role('button', { name: 'Bookmark' }))
   .describedAs('the bookmark button');
 
 describe('Bookmarks', () => {

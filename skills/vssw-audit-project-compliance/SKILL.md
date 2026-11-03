@@ -14,8 +14,9 @@ Run all three phases before prompting the user for anything.
 ## Phase 1: Detect the project
 
 - **Frontend** — `package.json` with React/Vite.
-- **Backend** — Kotlin/Gradle files.
-- **Monorepo** — both.
+- **Backend (Spring)** — Kotlin/Gradle files.
+- **Backend (Supabase)** — a `supabase/` folder (the constitution's default backend).
+- **Monorepo** — more than one of these.
 
 Then read `docs/constitution/README.md` if it is vendored, and the project's `CLAUDE.md`. A project may record a **deliberate deviation** — in `CLAUDE.md`, `openspec/config.yaml`, or an ADR under `docs/adr/`. A recorded deviation is **compliant**: report it as ⚠️ *recorded*, not ❌. Only unrecorded departures are failures.
 
@@ -41,23 +42,31 @@ Then read `docs/constitution/README.md` if it is vendored, and the project's `CL
 13. **TypeScript** — `strict: true`; grep for `any`, `@ts-ignore`, `as unknown as`.
 14. **PWA** — manifest, maskable icon, service worker, offline fallback.
 15. **E2E** — Playwright using **Serenity/JS** Screenplay; no `page.` calls in specs.
+16. **Accessibility** (`technologies/accessibility.md`) — native elements over `div` buttons, every input labelled, an automated axe check (`@axe-core/playwright`) in the e2e journeys.
+17. **Resilience** (`technologies/frontend-resilience.md`) — an error boundary at the app root, retries on GET only, and loading / empty / error states on data views.
+18. **Localization** (`technologies/localization.md`) — times stored in UTC, money as integer minor units, user-facing strings not concatenated from fragments.
 
-### Backend
-16. **Ports and adapters** — does `domain`/`application` import from `adapters`, `config`, or Spring? Is there an **ArchUnit test** enforcing it?
-17. **Contract first** — is `openapi.yaml` the source, with generated server interfaces? (A spec generated *from* annotations is a ❌.)
-18. **Persistence** — Spring Data JDBC, Flyway forward-only, **no edited migrations**.
-19. **Tests** — Testcontainers against real Postgres, **not H2**. Slices (`@DataJdbcTest`, `@WebMvcTest`) rather than `@SpringBootTest` everywhere.
-20. **API** — RFC 9457 Problem Details, HATEOAS `_links`, pagination on every collection, idempotency keys on unsafe POSTs.
-21. **Operations** — Actuator readiness/liveness, timeouts on every outbound call, secrets from the environment and not in `application.yml`.
+### Backend (Supabase) (`technologies/supabase.md`)
+19. **Row Level Security** — every table in `supabase/migrations/` has `enable row level security` and at least one policy, in the migration that creates it. A table without it is a data-exposure ❌, ranked first.
+20. **Schema in the repo** — every schema change is a migration file; no drift between `supabase db diff` and the migrations (run it if the local stack is up, else say so under *not checked*).
+21. **Keys** — no `service_role` key in frontend code or committed `.env` files.
+
+### Backend (Spring)
+22. **Ports and adapters** — does `domain`/`application` import from `adapters`, `config`, or Spring? Is there an **ArchUnit test** enforcing it?
+23. **Contract first** — is `openapi.yaml` the source, with generated server interfaces? (A spec generated *from* annotations is a ❌.)
+24. **Persistence** — Spring Data JDBC, Flyway forward-only, **no edited migrations**.
+25. **Tests** — Testcontainers against real Postgres, **not H2**. Slices (`@DataJdbcTest`, `@WebMvcTest`) rather than `@SpringBootTest` everywhere.
+26. **API** — RFC 9457 Problem Details, HATEOAS `_links`, pagination on every collection, idempotency keys on unsafe POSTs.
+27. **Operations** — Actuator readiness/liveness, timeouts on every outbound call, secrets from the environment and not in `application.yml`.
 
 ### Quality gates (`technologies/quality-gates.md`)
-Skip 23–24 for a repo with no application code (a blog, a docs site) only if that is recorded.
+Skip 29–30 for a repo with no application code (a blog, a docs site) only if that is recorded.
 
-22. **Lint in CI** — oxlint (frontend) or detekt (backend) runs in `.github/workflows` and in `CLAUDE.md`'s done-check. Run it: any warning left must be a planned change, not drift.
-23. **Coverage report** — a script writes lcov (`vitest run --coverage`) or JaCoCo XML, and `coverage/` (or the build dir) is git-ignored.
-24. **SonarQube** — a root `sonar-project.properties` names sources, tests and the coverage report path; `sonar-check` is the last item of `CLAUDE.md`'s done-check, after the coverage run; and the project has a baseline on the server (`curl -su "$(cat ~/.config/sonar/token):" "localhost:9000/api/projects/search?projects=<key>"` returns it). Server down or no token: say so under *not checked*.
-25. **Suppressions** — grep `NOSONAR`, `oxlint-disable`, `eslint-disable`, `@Suppress`: each needs a reason on the same line.
-26. **Renovate** — `renovate.json` extends `config:recommended` and pins GitHub Action digests; dependencies are exact, not ranges.
+28. **Lint in CI** — oxlint (frontend) or detekt (backend) runs in `.github/workflows` and in `CLAUDE.md`'s done-check. Run it: any warning left must be a planned change, not drift.
+29. **Coverage report** — a script writes lcov (`vitest run --coverage`) or JaCoCo XML, and `coverage/` (or the build dir) is git-ignored.
+30. **SonarQube** — a root `sonar-project.properties` names sources, tests and the coverage report path; `sonar-check` is the last item of `CLAUDE.md`'s done-check, after the coverage run; and the project has a baseline on the server (`curl -su "$(cat ~/.config/sonar/token):" "localhost:9000/api/projects/search?projects=<key>"` returns it). Server down or no token: say so under *not checked*.
+31. **Suppressions** — grep `NOSONAR`, `oxlint-disable`, `eslint-disable`, `@Suppress`: each needs a reason on the same line.
+32. **Renovate** — `renovate.json` extends `config:recommended` and pins GitHub Action digests; dependencies are exact, not ranges.
 
 ## Phase 3: Report
 
