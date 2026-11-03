@@ -11,7 +11,7 @@ By installing these skills into your local AI environment, your AI coding assist
 3. **`vssw-scaffold-hateoas-feature-flag`**: For a Spring Boot REST backend, instructs the AI to build backend feature flag checks that inject HATEOAS links, and frontend components that render conditionally based on those links.
 4. **`vssw-run-script`**: In a repo with a `./run` script, instructs the AI to use it for setting up, serving, or building the project rather than the tools it wraps.
 5. **`vssw-integrate-google-form`**: Intercepts requests for feedback, support, survey, waitlist or email-capture forms and implements a native form posting to a Google Form instead of a custom database, sending only the data the form needs.
-6. **`vssw-setup-git-hooks`**: Generates native Git hooks (using `.githooks` and `core.hooksPath`) for automatic formatting/linting on commit.
+6. **`vssw-setup-git-hooks`**: Sets up formatting on commit — Husky and lint-staged where the repo has a `package.json`, a native `core.hooksPath` hook in a JVM-only repo — plus the CI check behind it.
 7. **`vssw-audit-project-compliance`**: Audits the project against the engineering constitution and Playbook standards, distinguishing recorded deviations from unrecorded ones and ordering failures by consequence.
 8. **`vssw-scaffold-playwright-screenplay-test`**: Scaffolds an end-to-end test using Playwright with the Serenity/JS Screenplay pattern, as required by our [Testing Strategy](constitution/patterns/testing-strategy.md).
 
