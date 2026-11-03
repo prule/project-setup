@@ -3,7 +3,7 @@
 Code reviews are about ensuring architectural integrity, security, and knowledge sharing - not nitpicking.
 
 ## 1. The Philosophy
-- **Automate the Pedantry:** Formatting, linting, and imports are handled by Husky, Prettier, and ESLint/ktfmt. Do not leave comments about formatting.
+- **Automate the Pedantry:** Formatting, linting, and imports are handled by the pre-commit hook, Prettier, oxlint and ktfmt. Do not leave comments about formatting.
 - **Assume Competence & Good Intent:** Always phrase feedback as a question or suggestion, not a command (e.g., "What do you think about extracting this function?" instead of "Extract this function.").
 - **Review Architecture & Logic:** Look for race conditions, security flaws, missing test coverage, and violations of Clean Architecture.
 
