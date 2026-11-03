@@ -24,17 +24,18 @@ Always use the `./run` script rather than invoking `pip`/`mkdocs` directly (this
 
 There is no test suite; `npm test` is an unimplemented stub. Verification is: does `./run serve` render, and does the nav resolve.
 
-The installer is exercised with:
+Skills are installed either globally or per project:
 
 ```bash
-npx github:prule/project-setup init   # copies skills/ -> <cwd>/.claude/skills
+npx skills add prule/project-setup -g -a claude-code -y   # ~/.claude/skills, every repo (preferred)
+npx github:prule/project-setup init                       # copies skills/ -> <cwd>/.claude/skills
 ```
 
 ## Publishing pipeline
 
 `.github/workflows/docs-deploy.yml` runs `mkdocs gh-deploy --force` on every push to `main`. **A new file in `docs/` is invisible until it is added to the `nav:` block in `mkdocs.yml`** — MkDocs will build without it and silently drop it from the site. Cross-links between docs use relative `.md` paths (`./SquashAndMerge.md`), which MkDocs rewrites at build time.
 
-CI installs **only `mkdocs-material`**, so the site must render with the stock extension set declared in `mkdocs.yml`. Don't reach for a Markdown extension that needs another `pip install` — it will work locally and break the deploy.
+CI installs **only `requirements.txt`** (`mkdocs-material`, pinned), so the site must render with the stock extension set declared in `mkdocs.yml`. Don't reach for a Markdown extension that isn't in `requirements.txt` — it will work locally and break the deploy. `./run build` uses the same pin.
 
 ### Nested lists need 4 spaces, not 2
 
@@ -73,5 +74,4 @@ These come from `docs/GitWorkflow.md`, `docs/SquashAndMerge.md`, and the templat
 ## Repo-specific gotchas
 
 - The README file is `ReadMe.md` (mixed case), not `README.md`. Its content largely duplicates `docs/AISkills.md` — keep the installation instructions in the two in sync.
-- `The Engineering Playbook.pdf` is a stale generated artifact, not a source of truth; `docs/` is authoritative.
 - `.idea/` and `ProjectSetup.iml` are committed IntelliJ config. Leave them alone.

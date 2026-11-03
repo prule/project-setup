@@ -34,11 +34,15 @@ The frontend simply checks for the existence of the link to decide what UI to re
 ```
 This centralizes the logic in the backend, meaning you don't have to duplicate flag evaluations across the web frontend, iOS app, and Android app.
 
-### Pattern 2: Global UI Toggles (Fallback)
-If a feature does not correspond directly to a REST resource (e.g., a global UI redesign like a new Navigation Bar), the frontend will need to fetch global flags from a configuration endpoint and render conditionally:
-```tsx
-{flags['new-nav-bar'] ? <NavigationBarV2 /> : <NavigationBarV1 />}
+### Pattern 2: Global UI Toggles (Links on the Root Resource)
+If a feature does not belong to one resource (e.g., a global UI redesign like a new Navigation Bar), the backend still evaluates the flag. It puts the link on the API's root resource (`GET /`), which the app loads at start-up, so the frontend still only checks for a link:
+```json
+{ "_links": { "self": { "href": "/" }, "nav_v2": { "href": "/nav" } } }
 ```
+```tsx
+{root._links.nav_v2 ? <NavigationBarV2 /> : <NavigationBarV1 />}
+```
+The frontend never reads a flag name or a flag value (`docs/constitution/technologies/spring-boot-api.md`).
 
 ### Pattern 3: API Guards
 Always secure new backend endpoints. Even if the frontend UI is hidden, a malicious user could guess the URL. If the backend flag is disabled, the new endpoint must return a `404 Not Found` or `403 Forbidden`.

@@ -39,7 +39,7 @@ Schema changes only ever go through migration files, never the dashboard.
 ## 4. Zero downtime: expand, then contract
 The old code keeps running while the migration applies, so a migration must work with both versions.
 
-- **Rename, retype or drop a column:** add the new column; tell the user to deploy code that writes both and reads the new one; drop the old one in a later migration.
+- **Rename, retype or drop a column:** three deployments. (1) Add the new column; the code writes both and still reads the old one. (2) A migration backfills existing rows from the old column; the code then reads the new one. (3) A later migration drops the old column. Never switch reads before the backfill: rows written before the new column existed would read as empty.
 - **Add a `NOT NULL` column:** add it nullable or with a default, backfill, then add `NOT NULL` in a later migration.
 - **Add an index on a live table:** `CREATE INDEX CONCURRENTLY`. It cannot run in a transaction: in Flyway, put it alone in a migration with `-- flyway:executeInTransaction=false` on line 1; in Supabase, alone in its own migration file.
 - **Add a foreign key or check:** `ADD CONSTRAINT … NOT VALID`, then `VALIDATE CONSTRAINT` in a later migration, so the table is not locked while every row is checked.

@@ -12,13 +12,13 @@ The playbook is automatically generated into a beautiful, searchable site using 
 ## 🛠️ Running Locally
 If you are contributing to the playbook and want to preview your changes locally before committing:
 
-1. Install MkDocs and the Material theme (requires Python):
+1. Install MkDocs and the Material theme, pinned in `requirements.txt` (requires Python 3; it uses a local `.venv`):
    ```bash
-   pip install mkdocs-material
+   ./run setup
    ```
 2. Start the local server:
    ```bash
-   mkdocs serve
+   ./run serve
    ```
 3. Open `http://127.0.0.1:8000` in your browser.
 
@@ -26,10 +26,16 @@ If you are contributing to the playbook and want to preview your changes locally
 
 This repository isn't just a playbook of rules for human engineers to follow. It is an **Installable AI Plugin**. It contains custom AI skills that force your AI coding assistant to generate code adhering strictly to these playbook standards (e.g., using Hexagonal Architecture, HATEOAS, Expand and Contract migrations, etc.).
 
-For a full list of the 13 available skills, see the [AI Skills Hub](https://prule.github.io/project-setup/AISkills/).
+For a full list of the 9 available skills, see the [AI Skills Hub](https://prule.github.io/project-setup/AISkills/).
 
-### 🚀 1-Click Installation (Claude Code)
-To install these AI skills locally into any project, simply navigate to your project directory and run:
+### 🚀 Installation (Claude Code)
+**For every project at once (recommended):** install the skills into your personal `~/.claude/skills`, where Claude Code finds them in every repository. Re-run it to update them.
+
+```bash
+npx skills add prule/project-setup -g -a claude-code -y
+```
+
+**For one project, committed for the team:** copy the skills into the project's `.claude/skills` instead. Use this when teammates won't have the global install; the copies then need updating by hand.
 
 ```bash
 npx github:prule/project-setup init

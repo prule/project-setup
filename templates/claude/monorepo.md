@@ -42,5 +42,6 @@ merge, definition of done — are in the Playbook.
 
 ## Skills
 
-Use the installed VSSW skills where they apply. Bootstrapping a new project:
-`vssw-bootstrap-project`.
+Use the installed VSSW skills where they apply: `vssw-bootstrap-project` for a new
+repository, then the frontend and backend skills listed in `frontend.md` and
+`backend.md`, and `vssw-audit-project-compliance` across the whole repository.

@@ -19,8 +19,14 @@ By installing these skills into your local AI environment, your AI coding assist
 
 ## Installation
 
-### 🚀 1-Click Installation (Claude Code)
-To install these AI skills locally into any project, simply navigate to your project directory and run:
+### 🚀 Installation (Claude Code)
+**For every project at once (recommended):** install the skills into your personal `~/.claude/skills`, where Claude Code finds them in every repository. Re-run it to update them.
+
+```bash
+npx skills add prule/project-setup -g -a claude-code -y
+```
+
+**For one project, committed for the team:** copy the skills into the project's `.claude/skills` instead. Use this when teammates won't have the global install; the copies then need updating by hand.
 
 ```bash
 npx github:prule/project-setup init
