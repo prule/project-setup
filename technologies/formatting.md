@@ -43,7 +43,7 @@ Register it in `./run setup` so every clone gets it: `git config core.hooksPath 
 - **The hook is convenience; CI is enforcement.** `--no-verify` exists, so CI must run `spotlessCheck` and `prettier --check` and fail on a diff. Formatting policed only by a hook is not policed.
 - **Never `git add .` in a hook.** It sweeps unrelated working-tree changes into the commit. Re-stage only what was already staged, as above.
 - Keep formatting out of feature commits. Do the initial mass reformat as one commit, and add its SHA to `.git-blame-ignore-revs` so blame stays useful.
-- Use `eslint-config-prettier` so lint rules never fight the formatter. Lint is for correctness; formatting is for the formatter.
+- Lint is for correctness; formatting is for the formatter. oxlint's `correctness` rules never touch layout (`quality-gates.md`); an ESLint setup needs `eslint-config-prettier`.
 - Commit an `.editorconfig` so editors agree before a formatter runs.
 - Exclude generated code and vendored files — never reformat a generated client.
 - Do not use `// @formatter:off` or `// prettier-ignore` except for data tables and ASCII art where alignment carries meaning.

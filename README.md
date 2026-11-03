@@ -6,7 +6,7 @@ Design rules for agents building software. Three tiers, in descending order of a
 |---|---|---|
 | **[Principles](principles/README.md)** | Universal — apply to every decision | 12 files |
 | **[Patterns](patterns/README.md)** | Conditional — apply when the problem has that shape | 14 files |
-| **[Technologies](technologies/README.md)** | Chosen defaults — deviate only for a stated reason | 15 files |
+| **[Technologies](technologies/README.md)** | Chosen defaults — deviate only for a stated reason | 16 files |
 | **[Documentation](documentation/README.md)** | Standards — how to document what you build | 8 files |
 
 The tiers differ in how binding they are. A principle is never wrong to apply. A pattern applied to the wrong problem is itself a mistake — reaching for DDD on a CRUD app violates KISS and YAGNI, so every pattern file says when *not* to use it. A technology choice is a preference: follow it unless the project records a reason not to. Documentation standards apply to whatever you build, whichever stack it uses.
@@ -99,6 +99,7 @@ Other installation options, with trade-offs, are in [INSTALL.md](INSTALL.md).
 | Hosting | Cloudflare Pages + Workers (JVM needs a container host) |
 | API contracts | Contract first — OpenAPI written before code |
 | Formatting | Prettier · ktfmt · google-java-format, via pre-commit hook |
+| Quality gates | oxlint · detekt · coverage · SonarQube (`sonar-check`) · Renovate |
 | Repo layout | pnpm workspace monorepo |
 | Native shells | PWA first; Capacitor or Tauri only on demand |
 | Testing | Vitest · Playwright + Screenplay · JUnit 5 + MockK · Testcontainers |
@@ -125,7 +126,7 @@ Full rules in [documentation/README.md](documentation/README.md).
 ```
 principles/    12 files — universal rules
 patterns/      14 files — conditional designs, each with "when not to use this"
-technologies/  15 files — the chosen stack, with a decision tree
+technologies/  16 files — the chosen stack, with a decision tree
 documentation/ 8 files — what to document and where it lives
 ```
 
